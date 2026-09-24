@@ -1,0 +1,20 @@
+{
+  "name": "chesswithcodex",
+  "interface": {
+    "displayName": "Chess with Codex"
+  },
+  "plugins": [
+    {
+      "name": "chess",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
