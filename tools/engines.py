@@ -30,7 +30,8 @@ def _candidates() -> list:
     out = []
     env = os.environ.get("CHESSPLUGIN_ENGINE")
     if env:
-        out.append(pathlib.Path(env))
+        # Windows 用户常把路径连引号一起复制进来，这里顺手去掉
+        out.append(pathlib.Path(env.strip().strip('"').strip("'")))
     for name in names:
         out.append(ROOT / "engines" / name)
     for name in names:

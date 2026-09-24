@@ -41,6 +41,34 @@ powershell -ExecutionPolicy Bypass -File install.ps1
 装完不用配置——程序会自己按「环境变量 `CHESSPLUGIN_ENGINE` → 仓库内 `engines/` → `PATH` → 各系统常见目录」
 的顺序去找。找不到时对弈界面会自动退回内置的轻量对手，**功能不会坏，只是对手弱一些**。
 
+### 手动指定引擎（可选，三种系统各一份写法）
+
+一般用不上（自动能找到）。真要指定，按系统这么写：
+
+```bash
+# mac / Linux（临时；写进 ~/.zshrc 或 ~/.bashrc 就长期生效）
+export CHESSPLUGIN_ENGINE=/opt/homebrew/bin/stockfish
+```
+```powershell
+# Windows PowerShell（临时；setx 是永久）
+$env:CHESSPLUGIN_ENGINE = "C:\Program Files\stockfish\stockfish.exe"
+setx CHESSPLUGIN_ENGINE "C:\Program Files\stockfish\stockfish.exe"
+```
+
+另外两种等价做法：把可执行文件放进 `engines/`（mac/Linux 叫 `stockfish`，Windows 必须是 `stockfish.exe`），
+或者单次命令加 `--engine 路径`。注意：**对弈界面里那个引擎不需要这些配置**——
+它是 wasm，一份文件三平台通用，见下。
+
+### 两个引擎，别搞混
+
+| | 原生引擎（Python 侧） | 内嵌引擎（浏览器侧） |
+| --- | --- | --- |
+| 用在哪 | 分析、复盘、`pve.py`、Elo 实测 | 对弈界面里的对手 |
+| 形态 | 各平台的**原生可执行文件**（mac Mach-O / Windows .exe / Linux ELF） | **一份 wasm**，与平台无关 |
+| 哪来的 | 系统包管理器装（brew / winget / apt） | 用 `tools/build/build_engine.sh` 编一次，产物放 `engines/stockfish-single.js` |
+| 要不要按平台配置 | 要（上面那节） | **不要**，三平台同一个文件 |
+| 缺少时 | 分析类命令会提示安装；对弈自动退回轻量对手 | 同样自动退回轻量对手 |
+
 ## 文档地图
 
 | 文件 | 给谁看 | 内容 |
