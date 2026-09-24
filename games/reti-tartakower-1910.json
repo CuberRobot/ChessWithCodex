@@ -1,0 +1,204 @@
+{
+  "id": "reti-tartakower-1910",
+  "title": "Reti, Richard – Tartakower, Savielly",
+  "meta": "",
+  "headers": {
+    "Event": "Vienna",
+    "Site": "Vienna AUH",
+    "Date": "1910.??.??",
+    "Round": "?",
+    "White": "Reti, Richard",
+    "Black": "Tartakower, Savielly",
+    "Result": "1-0"
+  },
+  "start_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "start_cp": 25,
+  "start_mate": null,
+  "start_note": "",
+  "engine": {
+    "name": "Stockfish 19",
+    "path": "/opt/homebrew/bin/stockfish",
+    "depth": 16,
+    "threads": 4
+  },
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/reti-tartakower-1910.pgn",
+  "created": "2026-09-24T22:59:48",
+  "analyzed": "2026-09-24T22:59:48",
+  "plies": [
+    {
+      "ply": 1,
+      "san": "e4",
+      "uci": "e2e4",
+      "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+      "cp": 29,
+      "mate": null
+    },
+    {
+      "ply": 2,
+      "san": "c6",
+      "uci": "c7c6",
+      "fen": "rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "cp": 34,
+      "mate": null
+    },
+    {
+      "ply": 3,
+      "san": "d4",
+      "uci": "d2d4",
+      "fen": "rnbqkbnr/pp1ppppp/2p5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2",
+      "cp": 25,
+      "mate": null
+    },
+    {
+      "ply": 4,
+      "san": "d5",
+      "uci": "d7d5",
+      "fen": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3",
+      "cp": 23,
+      "mate": null
+    },
+    {
+      "ply": 5,
+      "san": "Nc3",
+      "uci": "b1c3",
+      "fen": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq - 1 3",
+      "cp": 16,
+      "mate": null
+    },
+    {
+      "ply": 6,
+      "san": "dxe4",
+      "uci": "d5e4",
+      "fen": "rnbqkbnr/pp2pppp/2p5/8/3Pp3/2N5/PPP2PPP/R1BQKBNR w KQkq - 0 4",
+      "cp": 19,
+      "mate": null
+    },
+    {
+      "ply": 7,
+      "san": "Nxe4",
+      "uci": "c3e4",
+      "fen": "rnbqkbnr/pp2pppp/2p5/8/3PN3/8/PPP2PPP/R1BQKBNR b KQkq - 0 4",
+      "cp": 25,
+      "mate": null
+    },
+    {
+      "ply": 8,
+      "san": "Nf6",
+      "uci": "g8f6",
+      "fen": "rnbqkb1r/pp2pppp/2p2n2/8/3PN3/8/PPP2PPP/R1BQKBNR w KQkq - 1 5",
+      "cp": 21,
+      "mate": null
+    },
+    {
+      "ply": 9,
+      "san": "Qd3",
+      "uci": "d1d3",
+      "fen": "rnbqkb1r/pp2pppp/2p2n2/8/3PN3/3Q4/PPP2PPP/R1B1KBNR b KQkq - 2 5",
+      "cp": 15,
+      "mate": null
+    },
+    {
+      "ply": 10,
+      "san": "e5",
+      "uci": "e7e5",
+      "fen": "rnbqkb1r/pp3ppp/2p2n2/4p3/3PN3/3Q4/PPP2PPP/R1B1KBNR w KQkq - 0 6",
+      "cp": 87,
+      "mate": null
+    },
+    {
+      "ply": 11,
+      "san": "dxe5",
+      "uci": "d4e5",
+      "fen": "rnbqkb1r/pp3ppp/2p2n2/4P3/4N3/3Q4/PPP2PPP/R1B1KBNR b KQkq - 0 6",
+      "cp": 94,
+      "mate": null
+    },
+    {
+      "ply": 12,
+      "san": "Qa5+",
+      "uci": "d8a5",
+      "fen": "rnb1kb1r/pp3ppp/2p2n2/q3P3/4N3/3Q4/PPP2PPP/R1B1KBNR w KQkq - 1 7",
+      "cp": 154,
+      "mate": null
+    },
+    {
+      "ply": 13,
+      "san": "Bd2",
+      "uci": "c1d2",
+      "fen": "rnb1kb1r/pp3ppp/2p2n2/q3P3/4N3/3Q4/PPPB1PPP/R3KBNR b KQkq - 2 7",
+      "cp": 154,
+      "mate": null
+    },
+    {
+      "ply": 14,
+      "san": "Qxe5",
+      "uci": "a5e5",
+      "fen": "rnb1kb1r/pp3ppp/2p2n2/4q3/4N3/3Q4/PPPB1PPP/R3KBNR w KQkq - 0 8",
+      "cp": 163,
+      "mate": null
+    },
+    {
+      "ply": 15,
+      "san": "O-O-O",
+      "uci": "e1c1",
+      "fen": "rnb1kb1r/pp3ppp/2p2n2/4q3/4N3/3Q4/PPPB1PPP/2KR1BNR b kq - 1 8",
+      "cp": 174,
+      "mate": null
+    },
+    {
+      "ply": 16,
+      "san": "Nxe4",
+      "uci": "f6e4",
+      "fen": "rnb1kb1r/pp3ppp/2p5/4q3/4n3/3Q4/PPPB1PPP/2KR1BNR w kq - 0 9",
+      "cp": null,
+      "mate": 3
+    },
+    {
+      "ply": 17,
+      "san": "Qd8+",
+      "uci": "d3d8",
+      "fen": "rnbQkb1r/pp3ppp/2p5/4q3/4n3/8/PPPB1PPP/2KR1BNR b kq - 1 9",
+      "cp": null,
+      "mate": 2
+    },
+    {
+      "ply": 18,
+      "san": "Kxd8",
+      "uci": "e8d8",
+      "fen": "rnbk1b1r/pp3ppp/2p5/4q3/4n3/8/PPPB1PPP/2KR1BNR w - - 0 10",
+      "cp": null,
+      "mate": 2
+    },
+    {
+      "ply": 19,
+      "san": "Bg5+",
+      "uci": "d2g5",
+      "fen": "rnbk1b1r/pp3ppp/2p5/4q1B1/4n3/8/PPP2PPP/2KR1BNR b - - 1 10",
+      "cp": null,
+      "mate": 1
+    },
+    {
+      "ply": 20,
+      "san": "Ke8",
+      "uci": "d8e8",
+      "fen": "rnb1kb1r/pp3ppp/2p5/4q1B1/4n3/8/PPP2PPP/2KR1BNR w - - 2 11",
+      "cp": null,
+      "mate": 1
+    },
+    {
+      "ply": 21,
+      "san": "Rd8#",
+      "uci": "d1d8",
+      "fen": "rnbRkb1r/pp3ppp/2p5/4q1B1/4n3/8/PPP2PPP/2K2BNR b - - 3 11",
+      "cp": null,
+      "mate": 0
+    }
+  ],
+  "stats": {
+    "positions": 22,
+    "cache_hits": 2,
+    "engine_queries": 20,
+    "seconds": 3.05,
+    "cache_size": 134
+  }
+}

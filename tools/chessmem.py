@@ -293,10 +293,12 @@ def cmd_list(args) -> int:
 
 def cmd_analyze_all(args) -> int:
     """把 pgn/ 里所有棋谱都分析入库（已有的走缓存，很快）。"""
-    paths_ = sorted(PGN_DIR.glob("*.pgn"))
-    if not paths_:
-        raise SystemExit(f"{PGN_DIR} 里没有 .pgn 文件")
-    for path in paths_:
+    found = []
+    for directory in paths.pgn_dirs():              # 预置库 + 自己的棋谱
+        found += sorted(directory.glob("*.pgn"))
+    if not found:
+        raise SystemExit("棋谱库里没有 .pgn 文件（可以先跑 tools/fetch_games.py --list 看看）")
+    for path in found:
         print(f"\n=== {path.name} ===")
         ns = argparse.Namespace(
             pgn=str(path),

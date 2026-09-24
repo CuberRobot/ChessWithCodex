@@ -103,6 +103,17 @@ V=~/.codex/visualizations/2026/09/13/<线程id>
 .venv/bin/python tools/chessmem.py stats
 ```
 
+## 8.5 添棋谱（棋谱库）
+
+```bash
+.venv/bin/python tools/fetch_games.py --list                     # 看库里有什么
+.venv/bin/python tools/fetch_games.py --user DrNykterstein --max 5 --analyze   # 按棋手拉
+.venv/bin/python tools/fetch_games.py --url https://example.com/game.pgn      # 任意 PGN 链接
+```
+
+预置短局随仓库走（插件目录的 `pgn/`），自己拉的存进数据目录的 `pgn/`；
+`analyze-all` 会把两处一起入库。注意：拉取需要联网，而分析/下棋不需要。
+
 ## 9. 测某档难度的真实水平
 
 ```bash

@@ -1,0 +1,68 @@
+{
+  "id": "fools-mate",
+  "title": "示例 – 示例",
+  "meta": "",
+  "headers": {
+    "Event": "教学：两回合被将死",
+    "Site": "-",
+    "Date": "????.??.??",
+    "Round": "?",
+    "White": "示例",
+    "Black": "示例",
+    "Result": "0-1"
+  },
+  "start_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "start_cp": 25,
+  "start_mate": null,
+  "start_note": "",
+  "engine": {
+    "name": "Stockfish 19",
+    "path": "/opt/homebrew/bin/stockfish",
+    "depth": 16,
+    "threads": 4
+  },
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/fools-mate.pgn",
+  "created": "2026-09-24T22:59:45",
+  "analyzed": "2026-09-24T22:59:45",
+  "plies": [
+    {
+      "ply": 1,
+      "san": "f3",
+      "uci": "f2f3",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/5P2/PPPPP1PP/RNBQKBNR b KQkq - 0 1",
+      "cp": -75,
+      "mate": null
+    },
+    {
+      "ply": 2,
+      "san": "e5",
+      "uci": "e7e5",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/8/5P2/PPPPP1PP/RNBQKBNR w KQkq - 0 2",
+      "cp": -73,
+      "mate": null
+    },
+    {
+      "ply": 3,
+      "san": "g4",
+      "uci": "g2g4",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq - 0 2",
+      "cp": null,
+      "mate": -1
+    },
+    {
+      "ply": 4,
+      "san": "Qh4#",
+      "uci": "d8h4",
+      "fen": "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3",
+      "cp": null,
+      "mate": 0
+    }
+  ],
+  "stats": {
+    "positions": 5,
+    "cache_hits": 1,
+    "engine_queries": 4,
+    "seconds": 1.02,
+    "cache_size": 114
+  }
+}

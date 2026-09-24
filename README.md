@@ -8,6 +8,7 @@
 | 你想干嘛 | 怎么办 |
 | --- | --- |
 | 存一盘棋、让它记住 | 把 PGN 丢进 `pgn/`，跑 `analyze-all`；或直接跟 Codex 说"把这盘收了" |
+| 找棋谱 | **预置了 5 盘经典短局**（Légal 陷阱、歌剧院之战、Réti–Tartakower 1910，以及三步杀/四步杀/贪吃中兵的教学局）；也可以用 `fetch_games.py` 从 Lichess 按棋手拉，或下载任意 PGN 链接 |
 | 看一整盘棋 | 回放台：**整盘评估曲线（点哪跳哪）**、跳到下一个转折点、点着法列表跳转、自动播放、逐手讲解 |
 | 只看一个局面 | 单张棋盘：给「哪盘棋的第几手」或直接给 FEN，可加箭头/圈选/评估条 |
 | 自己下一盘 | 对弈盘：点着下、对手离线应手、显示吃子和子力差、可悔棋、下完交给 Codex 复盘 |
@@ -145,6 +146,7 @@ dist/       渲染产物
 ```bash
 .venv/bin/python tools/chessmem.py stats      # 看看棋谱库与缓存的家底
 .venv/bin/python tools/chessmem.py analyze-all # 把 pgn/ 里的示例棋谱入库
+.venv/bin/python tools/fetch_games.py --list   # 看棋谱库里有什么（预置 + 自己拉的）
 .venv/bin/python dev/tests/smoke.py           # 自检（--browser 会真的开无头浏览器逐格校验）
 ```
 

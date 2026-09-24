@@ -62,6 +62,17 @@ CACHE_FILE = DATA_ROOT / "cache" / "evals.json"
 ENGINES_DIR = DATA_ROOT / "engines"
 PLUGIN_ENGINES_DIR = PLUGIN_ROOT / "engines"      # 本地克隆时大家习惯放这里
 
+# 棋谱库：随仓库的预置棋谱在插件目录，自己拉的放在数据目录，两处都算"库"
+PLUGIN_PGN_DIR = PLUGIN_ROOT / "pgn"
+
+
+def pgn_dirs() -> list:
+    """要扫描的棋谱目录（预置 + 自己拉的，去重）。"""
+    out = [PLUGIN_PGN_DIR]
+    if PGN_DIR != PLUGIN_PGN_DIR:
+        out.append(PGN_DIR)
+    return out
+
 
 def engine_files() -> list:
     """浏览器版单文件引擎可能的落点：先是数据目录，再是插件目录。"""

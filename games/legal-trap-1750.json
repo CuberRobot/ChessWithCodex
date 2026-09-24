@@ -21,9 +21,9 @@
     "depth": 16,
     "threads": 4
   },
-  "source": "pgn/legal-trap-1750.pgn",
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/legal-trap-1750.pgn",
   "created": "2026-09-12T23:36:10",
-  "analyzed": "2026-09-12T23:36:35",
+  "analyzed": "2026-09-24T22:59:45",
   "plies": [
     {
       "ply": 1,
@@ -236,8 +236,8 @@
     "positions": 14,
     "cache_hits": 14,
     "engine_queries": 0,
-    "seconds": 0.26,
-    "cache_size": 14
+    "seconds": 0.13,
+    "cache_size": 114
   },
   "start_note": "开局。这盘棋只有七个回合，却藏着一个「吃掉王后就输棋」的陷阱——点着法列表里任意一手跳过去，或者按自动播放慢慢看。"
 }

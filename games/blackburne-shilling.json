@@ -1,0 +1,148 @@
+{
+  "id": "blackburne-shilling",
+  "title": "示例 – 示例",
+  "meta": "",
+  "headers": {
+    "Event": "教学：贪吃中兵的下场",
+    "Site": "-",
+    "Date": "????.??.??",
+    "Round": "?",
+    "White": "示例",
+    "Black": "示例",
+    "Result": "0-1"
+  },
+  "start_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "start_cp": 25,
+  "start_mate": null,
+  "start_note": "",
+  "engine": {
+    "name": "Stockfish 19",
+    "path": "/opt/homebrew/bin/stockfish",
+    "depth": 16,
+    "threads": 4
+  },
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/blackburne-shilling.pgn",
+  "created": "2026-09-24T22:59:44",
+  "analyzed": "2026-09-24T22:59:44",
+  "plies": [
+    {
+      "ply": 1,
+      "san": "e4",
+      "uci": "e2e4",
+      "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+      "cp": 29,
+      "mate": null
+    },
+    {
+      "ply": 2,
+      "san": "e5",
+      "uci": "e7e5",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "cp": 28,
+      "mate": null
+    },
+    {
+      "ply": 3,
+      "san": "Nf3",
+      "uci": "g1f3",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+      "cp": 24,
+      "mate": null
+    },
+    {
+      "ply": 4,
+      "san": "Nc6",
+      "uci": "b8c6",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+      "cp": 31,
+      "mate": null
+    },
+    {
+      "ply": 5,
+      "san": "Bc4",
+      "uci": "f1c4",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+      "cp": 13,
+      "mate": null
+    },
+    {
+      "ply": 6,
+      "san": "Nd4",
+      "uci": "c6d4",
+      "fen": "r1bqkbnr/pppp1ppp/8/4p3/2BnP3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+      "cp": 135,
+      "mate": null
+    },
+    {
+      "ply": 7,
+      "san": "Nxe5",
+      "uci": "f3e5",
+      "fen": "r1bqkbnr/pppp1ppp/8/4N3/2BnP3/8/PPPP1PPP/RNBQK2R b KQkq - 0 4",
+      "cp": -73,
+      "mate": null
+    },
+    {
+      "ply": 8,
+      "san": "Qg5",
+      "uci": "d8g5",
+      "fen": "r1b1kbnr/pppp1ppp/8/4N1q1/2BnP3/8/PPPP1PPP/RNBQK2R w KQkq - 1 5",
+      "cp": -53,
+      "mate": null
+    },
+    {
+      "ply": 9,
+      "san": "Nxf7",
+      "uci": "e5f7",
+      "fen": "r1b1kbnr/pppp1Npp/8/6q1/2BnP3/8/PPPP1PPP/RNBQK2R b KQkq - 0 5",
+      "cp": -788,
+      "mate": null
+    },
+    {
+      "ply": 10,
+      "san": "Qxg2",
+      "uci": "g5g2",
+      "fen": "r1b1kbnr/pppp1Npp/8/8/2BnP3/8/PPPP1PqP/RNBQK2R w KQkq - 0 6",
+      "cp": -835,
+      "mate": null
+    },
+    {
+      "ply": 11,
+      "san": "Rf1",
+      "uci": "h1f1",
+      "fen": "r1b1kbnr/pppp1Npp/8/8/2BnP3/8/PPPP1PqP/RNBQKR2 b Qkq - 1 6",
+      "cp": -907,
+      "mate": null
+    },
+    {
+      "ply": 12,
+      "san": "Qxe4+",
+      "uci": "g2e4",
+      "fen": "r1b1kbnr/pppp1Npp/8/8/2Bnq3/8/PPPP1P1P/RNBQKR2 w Qkq - 0 7",
+      "cp": -907,
+      "mate": null
+    },
+    {
+      "ply": 13,
+      "san": "Be2",
+      "uci": "c4e2",
+      "fen": "r1b1kbnr/pppp1Npp/8/8/3nq3/8/PPPPBP1P/RNBQKR2 b Qkq - 1 7",
+      "cp": null,
+      "mate": -1
+    },
+    {
+      "ply": 14,
+      "san": "Nf3#",
+      "uci": "d4f3",
+      "fen": "r1b1kbnr/pppp1Npp/8/8/4q3/5n2/PPPPBP1P/RNBQKR2 w Qkq - 2 8",
+      "cp": null,
+      "mate": 0
+    }
+  ],
+  "stats": {
+    "positions": 15,
+    "cache_hits": 4,
+    "engine_queries": 11,
+    "seconds": 6.16,
+    "cache_size": 110
+  }
+}

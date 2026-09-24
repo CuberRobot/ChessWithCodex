@@ -1,0 +1,92 @@
+{
+  "id": "scholars-mate",
+  "title": "示例 – 示例",
+  "meta": "",
+  "headers": {
+    "Event": "教学：四回合被杀",
+    "Site": "-",
+    "Date": "????.??.??",
+    "Round": "?",
+    "White": "示例",
+    "Black": "示例",
+    "Result": "1-0"
+  },
+  "start_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "start_cp": 25,
+  "start_mate": null,
+  "start_note": "",
+  "engine": {
+    "name": "Stockfish 19",
+    "path": "/opt/homebrew/bin/stockfish",
+    "depth": 16,
+    "threads": 4
+  },
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/scholars-mate.pgn",
+  "created": "2026-09-24T22:59:49",
+  "analyzed": "2026-09-24T22:59:49",
+  "plies": [
+    {
+      "ply": 1,
+      "san": "e4",
+      "uci": "e2e4",
+      "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+      "cp": 29,
+      "mate": null
+    },
+    {
+      "ply": 2,
+      "san": "e5",
+      "uci": "e7e5",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "cp": 28,
+      "mate": null
+    },
+    {
+      "ply": 3,
+      "san": "Bc4",
+      "uci": "f1c4",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR b KQkq - 1 2",
+      "cp": -7,
+      "mate": null
+    },
+    {
+      "ply": 4,
+      "san": "Nc6",
+      "uci": "b8c6",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 2 3",
+      "cp": 16,
+      "mate": null
+    },
+    {
+      "ply": 5,
+      "san": "Qh5",
+      "uci": "d1h5",
+      "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
+      "cp": -16,
+      "mate": null
+    },
+    {
+      "ply": 6,
+      "san": "Nf6",
+      "uci": "g8f6",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+      "cp": null,
+      "mate": 1
+    },
+    {
+      "ply": 7,
+      "san": "Qxf7#",
+      "uci": "h5f7",
+      "fen": "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
+      "cp": null,
+      "mate": 0
+    }
+  ],
+  "stats": {
+    "positions": 8,
+    "cache_hits": 3,
+    "engine_queries": 5,
+    "seconds": 0.9,
+    "cache_size": 139
+  }
+}

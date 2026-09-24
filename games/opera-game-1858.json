@@ -22,9 +22,9 @@
     "depth": 16,
     "threads": 4
   },
-  "source": "pgn/opera-game-1858.pgn",
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/opera-game-1858.pgn",
   "created": "2026-09-13T00:44:27",
-  "analyzed": "2026-09-13T00:44:27",
+  "analyzed": "2026-09-24T22:59:45",
   "plies": [
     {
       "ply": 1,
@@ -293,9 +293,9 @@
   ],
   "stats": {
     "positions": 34,
-    "cache_hits": 5,
-    "engine_queries": 29,
-    "seconds": 23.44,
-    "cache_size": 43
+    "cache_hits": 34,
+    "engine_queries": 0,
+    "seconds": 0.13,
+    "cache_size": 114
   }
 }

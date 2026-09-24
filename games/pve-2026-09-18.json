@@ -21,9 +21,9 @@
     "depth": 16,
     "threads": 4
   },
-  "source": "pgn/pve-2026-09-18.pgn",
+  "source": "/Users/jimmy/GitProjects/ChessPlugin/pgn/pve-2026-09-18.pgn",
   "created": "2026-09-18T20:04:18",
-  "analyzed": "2026-09-18T20:04:40",
+  "analyzed": "2026-09-24T22:59:45",
   "plies": [
     {
       "ply": 1,
@@ -341,7 +341,7 @@
     "positions": 36,
     "cache_hits": 36,
     "engine_queries": 0,
-    "seconds": 0.15,
-    "cache_size": 99
+    "seconds": 0.13,
+    "cache_size": 114
   }
 }
