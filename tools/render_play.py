@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import sys
 
 from render_common import load_piece_sets, render_template
 
@@ -21,7 +22,10 @@ DEFAULT_TEMPLATE = ROOT / "templates" / "play.html"
 DEFAULT_PIECES = ROOT / "templates" / "pieces.js"
 DEFAULT_PIECES_RUNTIME = ROOT / "templates" / "pieces-runtime.js"
 DEFAULT_CHESS_JS = ROOT / "assets" / "js" / "chess.js"
-DEFAULT_ENGINE = ROOT / "engines" / "stockfish-single.js"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paths  # noqa: E402
+
+DEFAULT_ENGINE = next((p for p in paths.engine_files() if p.exists()), paths.engine_files()[0])
 PLAY_PLACEHOLDER = "__PLAY_JSON__"
 CHESS_JS_PLACEHOLDER = "__CHESS_JS__"
 ENGINE_PLACEHOLDER = "__ENGINE_B64_GZ__"

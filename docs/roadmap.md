@@ -14,9 +14,10 @@
 1. **插件在 Codex 里没起来**：仓库里的 `.mcp.json` 用的是 `python3`，Windows 没这个命令 → MCP 工具全部不可用。
    临时对策：跑 `install.ps1`（它会把配置改成本机路径）。**根治**：让安装脚本把 venv 建到用户数据目录，
    并让 `.mcp.json` 由安装脚本生成，仓库里那一份只作为 POSIX 默认值。
-2. **插件目录只读**：从 marketplace 装下来的快照不可写，而 `games/`、`notes/`、`cache/`、`engines/`
-   现在都在插件目录里 → 需要引入 `CHESSPLUGIN_HOME`（用户数据目录），把「代码」与「数据」彻底分开。
-   **这是目前离"即插即用"最远的一步。**
+2. ~~**插件目录只读**：从 marketplace 装下来的快照不可写，而 `games/`、`notes/`、`cache/`、`engines/`
+   都在插件目录里。~~ **已修（2026-09-24）**：新增 `tools/paths.py`，
+   数据按「`CHESSPLUGIN_HOME` → 插件目录（可写时，保持旧行为）→ 用户数据目录」落地；
+   引擎查找同时看这两处。已用只读场景端到端验证（数据确实落到用户数据目录）。
 3. **PowerShell 管道喂 UCI 会读错命令**（实测得到 `bestmove a2a3`）：文档里已加警告，
    工具内部走 python-chess 不受影响。
 

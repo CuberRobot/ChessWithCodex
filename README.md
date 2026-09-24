@@ -16,6 +16,30 @@
 
 同一盘棋只算一次：评估按「局面 + 深度 + 引擎」缓存，重复的局面（哪怕是别的棋里的）直接命中。
 
+## 前置要求
+
+| 需要什么 | 说明 |
+| --- | --- |
+| **Codex 桌面版**（支持插件） | 装好插件后要**重启一次**才会出现 |
+| **Python 3.9+** | mac/Linux 用 `python3`（系统自带或 brew 装的都行）；Windows 用 [python.org](https://www.python.org/downloads/) 版或 Microsoft Store 版，**安装时勾选 "Add to PATH"**。<br>这是插件能不能加载的前提：仓库里的 `.mcp.json` 默认写的是 `python3`（mac/Linux 写法），**Windows 上必须先跑 `install.ps1`** 把它换成你的解释器路径 |
+| **网络**（仅安装时需要） | 装依赖（python-chess）与可选的引擎 |
+| **Stockfish**（可选，强烈建议） | 分析、复盘、Elo 实测需要它；**缺了不会坏**——对弈界面自动退回内置轻量对手 |
+| **磁盘** | venv + 依赖约 100MB，原生引擎约 100MB，内嵌引擎 0.7MB |
+| **目录权限** | 插件目录**只读也能用**：数据会自动落到用户数据目录（见下） |
+
+### 数据写在哪里
+
+代码在插件目录，**数据按这个顺序落地**：
+
+1. 环境变量 `CHESSPLUGIN_HOME` 指定的目录（显式指定时）
+2. **插件目录本身（可写时）**——本地克隆就是这样，行为与以前完全一致
+3. 插件目录只读时 → 用户数据目录：
+   mac `~/Library/Application Support/ChessWithCodex`、
+   Windows `%LOCALAPPDATA%\ChessWithCodex`、
+   Linux `~/.local/share/ChessWithCodex`
+
+所以从 marketplace 装下来的只读快照也能正常用（棋谱、讲解、缓存、对局、引擎都写到第 3 项里）。
+
 ## 安装
 
 **一条命令**（会建好 Python 环境、装依赖、找引擎、写插件配置、登记到 Codex 的 marketplace）：

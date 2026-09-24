@@ -25,10 +25,11 @@ import chess.pgn
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import chessmem  # noqa: E402  （复用分析入库那一套）
+import paths  # noqa: E402
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-SESSIONS_DIR = ROOT / "sessions"
-PGN_DIR = ROOT / "pgn"
+ROOT = paths.DATA_ROOT          # 数据目录（插件目录只读时会落到用户数据目录）
+SESSIONS_DIR = paths.SESSIONS_DIR
+PGN_DIR = paths.PGN_DIR
 DEFAULT_ENGINE = chessmem.DEFAULT_ENGINE
 
 # 难度以 Elo 为准，名字只是常用档位的别名

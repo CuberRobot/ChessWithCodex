@@ -27,10 +27,14 @@ import chess
 import chess.engine
 import chess.pgn
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-GAMES_DIR = ROOT / "games"
-NOTES_DIR = ROOT / "notes"
-CACHE_FILE = ROOT / "cache" / "evals.json"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paths  # noqa: E402
+
+ROOT = paths.DATA_ROOT          # 棋谱、讲解、缓存都写这里（插件目录只读时自动落到用户目录）
+GAMES_DIR = paths.GAMES_DIR
+NOTES_DIR = paths.NOTES_DIR
+CACHE_FILE = paths.CACHE_FILE
+PGN_DIR = paths.PGN_DIR
 try:
     from engines import find_engine  # 同目录；跨平台解析引擎路径
 
@@ -289,10 +293,10 @@ def cmd_list(args) -> int:
 
 def cmd_analyze_all(args) -> int:
     """把 pgn/ 里所有棋谱都分析入库（已有的走缓存，很快）。"""
-    paths = sorted((ROOT / "pgn").glob("*.pgn"))
-    if not paths:
-        raise SystemExit("pgn/ 里没有 .pgn 文件")
-    for path in paths:
+    paths_ = sorted(PGN_DIR.glob("*.pgn"))
+    if not paths_:
+        raise SystemExit(f"{PGN_DIR} 里没有 .pgn 文件")
+    for path in paths_:
         print(f"\n=== {path.name} ===")
         ns = argparse.Namespace(
             pgn=str(path),

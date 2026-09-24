@@ -14,6 +14,9 @@ import pathlib
 import shutil
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paths  # noqa: E402
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 INSTALL_HINT = (
@@ -34,6 +37,8 @@ def _candidates() -> list:
         out.append(pathlib.Path(env.strip().strip('"').strip("'")))
     for name in names:
         out.append(ROOT / "engines" / name)
+    for name in names:
+        out.append(paths.ENGINES_DIR / name)       # 插件只读时，引擎放用户数据目录也能找到
     for name in names:
         found = shutil.which(name)
         if found:

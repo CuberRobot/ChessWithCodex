@@ -10,14 +10,19 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import sys
 
 from render_common import load_piece_sets, render_template
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-GAMES_DIR = ROOT / "games"
-DEFAULT_TEMPLATE = ROOT / "templates" / "board.html"
-DEFAULT_PIECES = ROOT / "templates" / "pieces.js"
-DEFAULT_PIECES_RUNTIME = ROOT / "templates" / "pieces-runtime.js"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import paths  # noqa: E402
+
+ROOT = paths.DATA_ROOT
+PLUGIN = paths.PLUGIN_ROOT
+GAMES_DIR = paths.GAMES_DIR
+DEFAULT_TEMPLATE = PLUGIN / "templates" / "board.html"
+DEFAULT_PIECES = PLUGIN / "templates" / "pieces.js"
+DEFAULT_PIECES_RUNTIME = PLUGIN / "templates" / "pieces-runtime.js"
 BOARD_PLACEHOLDER = "__BOARD_JSON__"
 PIECES_PLACEHOLDER = "__PIECE_SETS__"
 RUNTIME_PLACEHOLDER = "__PIECES_RUNTIME__"
