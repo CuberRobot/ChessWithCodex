@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# 渲染产物（每次重新生成，不入库）
+dist/
+
+# 本地开发用：测试、诊断脚本（保留在本地，不随仓库分发）
+dev/
+
+# 引擎二进制（GPLv3 的第三方产物，按需自行获取或编译，见 THIRD-PARTY.md）
+engines/
+
+# 运行时状态与缓存（各自环境自己生成）
+cache/
+sessions/
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+*.tmp

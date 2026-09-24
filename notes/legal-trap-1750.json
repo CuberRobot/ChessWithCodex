@@ -1,0 +1,65 @@
+{
+  "start_note": "开局。这盘棋只有七个回合，却藏着一个「吃掉王后就输棋」的陷阱——点着法列表里任意一手跳过去，或者按自动播放慢慢看。",
+  "plies": [
+    { "ply": 1, "san": "e4", "note": "白方先抢中心：e4 兵控制 d5 和 f5。" },
+    { "ply": 2, "san": "e5", "note": "黑方对称回应，双方在中央顶住。" },
+    { "ply": 3, "san": "Nf3", "note": "顺手攻击 e5 兵，黑方得决定怎么守。" },
+    { "ply": 4, "san": "d6", "note": "用兵守住 e5，代价是 d6 这格以后会挡住自己的王。" },
+    {
+      "ply": 5,
+      "san": "Bc4",
+      "note": "白象瞄上 f7，整盘棋的伏笔埋在这里。",
+      "highlights": [{ "square": "f7", "tone": "focus", "style": "ring" }]
+    },
+    {
+      "ply": 6,
+      "san": "Bg4",
+      "note": "黑象出来、钉住 f3 马。问题是：它自己没有根。",
+      "highlights": [{ "square": "g4", "tone": "focus", "style": "ring" }]
+    },
+    { "ply": 7, "san": "Nc3", "note": "白方不理会，继续出子。陷阱已经摆好了。" },
+    {
+      "ply": 8,
+      "san": "g6",
+      "note": "引擎说这一手就已经错了：黑方以为在加固，其实是把弃后的机会送到白方手里。",
+      "markers": [{ "square": "g6", "text": "?!", "shape": "glyph", "tone": "mistake" }]
+    },
+    {
+      "ply": 9,
+      "san": "Nxe5",
+      "note": "弃后！黑方若 5...dxe5，6.Qxg4 白赚一兵一象；若贪吃王后，就是杀。",
+      "arrows": [{ "from": "f3", "to": "e5", "tone": "best" }]
+    },
+    {
+      "ply": 10,
+      "san": "Bxd1",
+      "note": "黑方吃掉了王后，赢了一个子，也输掉了这一局——接下来两步都是被迫的。",
+      "arrows": [{ "from": "g4", "to": "d1", "tone": "blunder" }],
+      "markers": [{ "square": "d1", "text": "??", "shape": "glyph", "tone": "blunder" }]
+    },
+    {
+      "ply": 11,
+      "san": "Bxf7+",
+      "note": "将军。黑王只有 e7 这一个格子能去。",
+      "arrows": [{ "from": "c4", "to": "f7", "tone": "best" }],
+      "highlights": [{ "square": "e8", "tone": "check", "style": "ring" }]
+    },
+    {
+      "ply": 12,
+      "san": "Ke7",
+      "note": "唯一的一步，但 e7 这格很冷。",
+      "highlights": [{ "square": "e7", "tone": "check", "style": "ring" }]
+    },
+    {
+      "ply": 13,
+      "san": "Nd5#",
+      "note": "杀。两个马封死了所有退路：e5 的马管 d7，d5 的马管 f6，f7 的象管 e6 和 e8。",
+      "arrows": [{ "from": "c3", "to": "d5", "tone": "best" }],
+      "highlights": [
+        { "square": "e7", "tone": "check", "style": "ring" },
+        { "square": "d7", "tone": "focus", "style": "dot" },
+        { "square": "f6", "tone": "focus", "style": "dot" }
+      ]
+    }
+  ]
+}

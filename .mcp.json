@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "chess": {
+      "command": "python3",
+      "args": [
+        "mcp/launch.py"
+      ]
+    }
+  }
+}

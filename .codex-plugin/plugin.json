@@ -1,0 +1,26 @@
+{
+  "name": "chess",
+  "version": "0.1.0+codex.20260912173124",
+  "description": "Local chess workspace: PGN library, Stockfish analysis, replay boards and PvE play.",
+  "author": {
+    "name": "Jimmy"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Chess",
+    "shortDescription": "\u7528\u81ea\u7136\u8bed\u8a00\u4e0b\u68cb\u3001\u590d\u76d8\u3001\u770b\u68cb\u8c31\u3002",
+    "longDescription": "ChessPlugin \u628a\u672c\u5730\u68cb\u8c31\u5e93\u3001Stockfish \u5206\u6790\u548c\u4eba\u673a\u5bf9\u6218\u5305\u6210\u5de5\u5177\uff1a\u5165\u5e93\u68cb\u8c31\u3001\u8bfb\u51fa\u8bb0\u5f55\u3001\u6e32\u67d3\u53ef\u70b9\u53ef\u64ad\u7684\u68cb\u76d8\u3001\u548c\u4e0d\u540c Elo \u7684\u5f15\u64ce\u4e0b\u68cb\u5e76\u590d\u76d8\u3002",
+    "developerName": "Jimmy",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "\u5f00\u4e00\u5c40\u68cb\uff0c\u8ba9\u4f60\u9009\u96be\u5ea6\u548c\u65f6\u95f4",
+      "\u628a\u8fd9\u76d8\u68cb\u6536\u8fdb\u6765\uff0c\u8bb2\u5173\u952e\u51e0\u6b65",
+      "\u590d\u76d8\u4e0a\u4e00\u76d8\uff0c\u6307\u51fa\u6211\u7684\u6f0f\u7740"
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

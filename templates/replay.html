@@ -1,0 +1,571 @@
+<div id="cr-root">
+  <style>
+    #cr-root {
+      --cr-max: 470px;
+      --cr-eval-w: 22px;
+      --cr-gap: 10px;
+      --cr-piece-white: light-dark(#fbfaf8, #f5f2ec);
+      --cr-piece-black: light-dark(#312d29, #262320);
+    }
+    #cr-root figure {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 736px;
+    }
+    /* 作者样式里的 display 会盖掉 UA 的 [hidden]{display:none} */
+    #cr-root [hidden] {
+      display: none !important;
+    }
+    #cr-root h2 {
+      margin: 0;
+      font-weight: 500;
+    }
+    #cr-root .cr-meta {
+      display: inline-block;
+      margin-left: 6px;
+      font-weight: 400;
+    }
+    #cr-root .cr-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2px 14px;
+      color: var(--muted-foreground);
+    }
+    #cr-root .cr-main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--cr-gap);
+      align-items: stretch;
+    }
+    #cr-root .cr-eval {
+      flex: 0 0 var(--cr-eval-w);
+      width: var(--cr-eval-w);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: var(--cr-piece-black);
+      box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 14%, transparent);
+    }
+    #cr-root .cr-eval-fill {
+      width: 100%;
+      height: 50%;
+      background: var(--cr-piece-white);
+    }
+    #cr-root .cr-boardwrap {
+      flex: 1 1 300px;
+      min-width: 240px;
+      max-width: var(--cr-max);
+    }
+    #cr-root svg.cr-board {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+    #cr-root .cr-piece {
+      font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2",
+        "DejaVu Sans", "Arial Unicode MS", sans-serif;
+      paint-order: stroke fill;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    #cr-root .cr-coord {
+      font-weight: 500;
+    }
+    #cr-root .cr-moves {
+      flex: 1 1 205px;
+      min-width: 190px;
+      max-width: 240px;
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: 2px 4px;
+      align-content: start;
+    }
+    #cr-root .cr-moveno {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 2px;
+      color: var(--muted-foreground);
+    }
+    #cr-root figcaption {
+      margin: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #cr-root .cr-eval-fill {
+        transition: none !important;
+      }
+    }
+  </style>
+
+  <figure>
+    <div class="cr-status">
+      <h2><span id="cr-title"></span><span class="cr-meta text-muted text-small" id="cr-meta"></span></h2>
+      <div class="text-small" aria-live="polite">
+        <span id="cr-engine"></span>
+      </div>
+    </div>
+
+    <div class="cr-status text-small" aria-live="polite">
+      <span id="cr-ply-label">起始局面</span>
+      <span id="cr-eval-label">评估 +0.26</span>
+    </div>
+
+    <div class="cr-main">
+      <div class="cr-eval" id="cr-bar" role="img" aria-label="评估条">
+        <div class="cr-eval-fill" id="cr-bar-fill"></div>
+      </div>
+      <div class="cr-boardwrap" id="cr-boardwrap"></div>
+      <div class="cr-moves" id="cr-moves" role="group" aria-label="着法列表"></div>
+    </div>
+
+    <div class="viz-controls">
+      <button type="button" class="btn" id="cr-prev">上一步</button>
+      <button type="button" class="btn" id="cr-play" aria-pressed="false">自动播放</button>
+      <button type="button" class="btn" id="cr-next">下一步</button>
+      <label class="form-label" for="cr-speed">间隔</label>
+      <select class="form-select" id="cr-speed">
+        <option value="600">0.6 秒</option>
+        <option value="1200" selected>1.2 秒</option>
+        <option value="2500">2.5 秒</option>
+      </select>
+    </div>
+
+    <figcaption id="cr-note" aria-live="polite"></figcaption>
+  </figure>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const root = document.getElementById("cr-root");
+      if (!root || root.dataset.crReady === "1") return;
+      root.dataset.crReady = "1";
+
+      /* 棋子渲染器 + 棋组数据，渲染时注入 */
+      __PIECES_RUNTIME__
+      __PIECE_SETS__
+
+      /* ==========================================================
+         DATA — 由本地棋谱记录注入（tools/render_replay.py 生成）
+         每一着附带：走后的 FEN、该局面的白方视角评估、讲解、可选标注
+         cp 单位是 1/100 兵；mate 为"白方视角的杀棋步数"（0 = 已杀）
+         ========================================================== */
+      const GAME = __GAME_JSON__;
+      const START_FEN = GAME.startFen;
+      const START_CP = GAME.startCp;
+      const PLIES = GAME.plies;
+      const SHOW_EVAL = GAME.showEval !== false;
+      const THEMES = {
+        wood: { light: "light-dark(#f0d9b5, #d9c39c)", dark: "light-dark(#b58863, #9a7150)" },
+        green: { light: "light-dark(#eeeed2, #dfe3bd)", dark: "light-dark(#769656, #5f7d43)" },
+        slate: { light: "light-dark(#e9e7e2, #d8d5cf)", dark: "light-dark(#8794a3, #6d7a89)" }
+      };
+      const TONES = {
+        focus: { color: "var(--yellow)", opacity: 0.5 },
+        best: { color: "var(--green)", opacity: 0.28 },
+        alt: { color: "var(--blue)", opacity: 0.28 },
+        plan: { color: "var(--green)", opacity: 0.28 },
+        threat: { color: "var(--red)", opacity: 0.28 },
+        mistake: { color: "var(--orange)", opacity: 0.3 },
+        blunder: { color: "var(--red)", opacity: 0.32 },
+        last: { color: "var(--yellow)", opacity: 0.22 },
+        check: { color: "var(--red)", opacity: 0.6 }
+      };
+      const OPTIONS = { theme: "wood", orientation: "white", coordinates: true, pieces: "chessnut" };
+      const GLYPHS = { k: "\u265a", q: "\u265b", r: "\u265c", b: "\u265d", n: "\u265e", p: "\u265f" };
+      const FILES = "abcdefgh";
+      const NS = "http://www.w3.org/2000/svg";
+
+      const pieceSets = typeof PIECE_SETS === "undefined" ? {} : PIECE_SETS;
+      const pieces = makePieceRenderer(pieceSets, GAME.pieces || "chessnut");
+
+      const themeOf = () => THEMES[OPTIONS.theme] || THEMES.wood;
+      const toneOf = (name) => TONES[name] || TONES.focus;
+
+      function parseFen(fen) {
+        const parts = String(fen).trim().split(/\s+/);
+        const board = {};
+        const rows = parts[0].split("/");
+        for (let i = 0; i < rows.length; i++) {
+          const rank = 8 - i;
+          let file = 0;
+          for (const ch of rows[i]) {
+            if (ch >= "1" && ch <= "8") {
+              file += Number(ch);
+            } else {
+              const lower = ch.toLowerCase();
+              if (FILES[file] && GLYPHS[lower]) {
+                board[FILES[file] + rank] = { color: ch === lower ? "b" : "w", type: lower };
+              }
+              file += 1;
+            }
+          }
+        }
+        return { board, active: parts[1] === "b" ? "b" : "w", fullmove: Number(parts[5] || 1) };
+      }
+
+      function xy(square) {
+        if (typeof square !== "string" || square.length < 2) return null;
+        const f = FILES.indexOf(square[0].toLowerCase());
+        const r = Number(square[1]) - 1;
+        if (f < 0 || !(r >= 0 && r <= 7)) return null;
+        return OPTIONS.orientation === "black" ? [7 - f, r] : [f, 7 - r];
+      }
+      function squareAt(vx, vy) {
+        const f = OPTIONS.orientation === "black" ? 7 - vx : vx;
+        const r = OPTIONS.orientation === "black" ? vy : 7 - vy;
+        return FILES[f] + (r + 1);
+      }
+      const isLight = (vx, vy) => (vx + vy) % 2 === 0;
+
+      function el(tag, attrs) {
+        const node = document.createElementNS(NS, tag);
+        if (attrs) {
+          for (const key in attrs) {
+            const value = attrs[key];
+            if (value === null || value === undefined || value === false) continue;
+            node.setAttribute(key, String(value));
+          }
+        }
+        return node;
+      }
+      function label(text, attrs) {
+        const node = el("text", attrs);
+        node.textContent = text;
+        return node;
+      }
+
+      /* ---------------- 棋盘 ---------------- */
+      const svg = el("svg", {
+        class: "cr-board",
+        viewBox: "0 0 8 8",
+        role: "img",
+        "aria-labelledby": "cr-svg-title"
+      });
+      const svgTitle = el("title", { id: "cr-svg-title" });
+      const svgDesc = el("desc");
+      svg.appendChild(svgTitle);
+      svg.appendChild(svgDesc);
+      const svgLayer = el("g");
+      svg.appendChild(svgLayer);
+      document.getElementById("cr-boardwrap").appendChild(svg);
+
+      function drawBoard(pos, marks, lastFrom, lastTo) {
+        const g = el("g");
+        const t = themeOf();
+
+        g.appendChild(el("rect", { x: 0, y: 0, width: 8, height: 8, fill: t.light }));
+        for (let vx = 0; vx < 8; vx++) {
+          for (let vy = 0; vy < 8; vy++) {
+            if (!isLight(vx, vy)) {
+              g.appendChild(el("rect", { x: vx, y: vy, width: 1, height: 1, fill: t.dark }));
+            }
+          }
+        }
+
+        if (lastFrom && lastTo) {
+          const lt = toneOf("last");
+          for (const square of [lastFrom, lastTo]) {
+            const p = xy(square);
+            if (p) g.appendChild(el("rect", { x: p[0], y: p[1], width: 1, height: 1, fill: lt.color, opacity: lt.opacity }));
+          }
+        }
+
+        // 棋子下方的圈选 / 铺色
+        for (const item of marks.highlights || []) {
+          const p = xy(item.square);
+          if (!p) continue;
+          const tone = toneOf(item.tone);
+          if ((item.style || "fill") === "ring") {
+            g.appendChild(el("circle", {
+              cx: p[0] + 0.5, cy: p[1] + 0.5, r: 0.4, fill: "none",
+              stroke: tone.color, "stroke-width": 0.09,
+              opacity: Math.min(1, tone.opacity + 0.35)
+            }));
+          } else if ((item.style || "fill") === "fill") {
+            g.appendChild(el("rect", { x: p[0], y: p[1], width: 1, height: 1, fill: tone.color, opacity: tone.opacity }));
+          }
+        }
+
+        // 棋子
+        for (const square in pos.board) {
+          const p = xy(square);
+          if (!p) continue;
+          const piece = pos.board[square];
+          const node = pieces.node(piece.color, piece.type.toUpperCase(), p);
+          node.setAttribute("class", "cr-piece");
+          node.setAttribute("data-square", square);
+          g.appendChild(node);
+        }
+
+        // 圆点画在棋子之上
+        for (const item of marks.highlights || []) {
+          if ((item.style || "fill") !== "dot") continue;
+          const p = xy(item.square);
+          if (!p) continue;
+          const tone = toneOf(item.tone);
+          g.appendChild(el("circle", {
+            cx: p[0] + 0.5, cy: p[1] + 0.5, r: item.radius || 0.15,
+            fill: tone.color, opacity: Math.min(1, tone.opacity + 0.25)
+          }));
+        }
+
+        // 箭头
+        for (const item of marks.arrows || []) {
+          const a = xy(item.from), b = xy(item.to);
+          if (!a || !b) continue;
+          const tone = toneOf(item.tone);
+          const x1 = a[0] + 0.5, y1 = a[1] + 0.5, x2 = b[0] + 0.5, y2 = b[1] + 0.5;
+          const dx = x2 - x1, dy = y2 - y1;
+          const len = Math.sqrt(dx * dx + dy * dy);
+          if (len < 0.001) continue;
+          const ux = dx / len, uy = dy / len;
+          const headLen = Math.min(0.34, Math.max(0.22, len * 0.36));
+          const sx = x1 + ux * 0.26, sy = y1 + uy * 0.26;
+          const tipX = x2 - ux * 0.12, tipY = y2 - uy * 0.12;
+          const baseX = tipX - ux * headLen, baseY = tipY - uy * headLen;
+          const px = -uy, py = ux;
+          g.appendChild(el("line", {
+            x1: sx, y1: sy, x2: baseX, y2: baseY, stroke: tone.color,
+            "stroke-width": 0.11, "stroke-linecap": "round", opacity: 0.82
+          }));
+          g.appendChild(el("polygon", {
+            points: [tipX + "," + tipY,
+              baseX + px * 0.19 + "," + (baseY + py * 0.19),
+              baseX - px * 0.19 + "," + (baseY - py * 0.19)].join(" "),
+            fill: tone.color, opacity: 0.82
+          }));
+        }
+
+        // 角标
+        const offsets = { tl: [0.19, 0.2], tr: [0.81, 0.2], bl: [0.19, 0.81], br: [0.81, 0.81] };
+        for (const item of marks.markers || []) {
+          const p = xy(item.square);
+          if (!p) continue;
+          const tone = toneOf(item.tone);
+          const corner = item.corner || (item.shape === "glyph" ? "br" : "tl");
+          const off = offsets[corner] || offsets.tl;
+          const cx = p[0] + off[0], cy = p[1] + off[1];
+          if (item.shape === "glyph") {
+            g.appendChild(label(String(item.text), {
+              x: cx, y: cy, "text-anchor": "middle", "dominant-baseline": "central",
+              "font-size": 0.36, "font-weight": 500, fill: tone.color,
+              stroke: "var(--background)", "stroke-width": 0.05, "paint-order": "stroke fill"
+            }));
+          } else {
+            g.appendChild(el("circle", { cx: cx, cy: cy, r: 0.15, fill: tone.color, opacity: 0.95 }));
+            g.appendChild(label(String(item.text), {
+              x: cx, y: cy, "text-anchor": "middle", "dominant-baseline": "central",
+              "font-size": 0.22, "font-weight": 500, fill: "var(--background)"
+            }));
+          }
+        }
+
+        if (OPTIONS.coordinates) {
+          for (let vx = 0; vx < 8; vx++) {
+            for (let vy = 0; vy < 8; vy++) {
+              const fill = isLight(vx, vy) ? t.dark : t.light;
+              const square = squareAt(vx, vy);
+              if (vx === 0) {
+                g.appendChild(label(square[1], {
+                  x: vx + 0.07, y: vy + 0.28, "text-anchor": "start",
+                  "font-size": 0.21, class: "cr-coord", fill: fill, opacity: 0.9
+                }));
+              }
+              if (vy === 7) {
+                g.appendChild(label(square[0], {
+                  x: vx + 0.92, y: vy + 0.95, "text-anchor": "end",
+                  "font-size": 0.21, class: "cr-coord", fill: fill, opacity: 0.9
+                }));
+              }
+            }
+          }
+        }
+
+        g.appendChild(el("rect", {
+          x: 0.012, y: 0.012, width: 7.976, height: 7.976,
+          fill: "none", stroke: "var(--border)", "stroke-width": 0.024
+        }));
+
+        svgLayer.replaceChildren(g);
+      }
+
+      /* ---------------- 评估 ---------------- */
+      const barFill = document.getElementById("cr-bar-fill");
+      const bar = document.getElementById("cr-bar");
+      const evalLabelEl = document.getElementById("cr-eval-label");
+
+      function evalOf(index) {
+        if (index === 0) return { cp: START_CP, mate: null };
+        const ply = PLIES[index - 1];
+        return { cp: ply.cp, mate: ply.mate };
+      }
+      function pawns(info, active) {
+        if (info.mate !== null && info.mate !== undefined) {
+          if (info.mate === 0) return active === "b" ? 5 : -5;
+          return info.mate > 0 ? 5 : -5;
+        }
+        return (info.cp || 0) / 100;
+      }
+      function evalText(info, active) {
+        if (info.mate !== null && info.mate !== undefined) {
+          if (info.mate === 0) return active === "b" ? "1-0 将杀" : "0-1 将杀";
+          return info.mate > 0 ? "#" + info.mate : "-#" + -info.mate;
+        }
+        const v = (info.cp || 0) / 100;
+        return (v > 0 ? "+" : v < 0 ? "-" : "") + Math.abs(v).toFixed(2);
+      }
+
+      /* ---------------- 着法列表 ---------------- */
+      const movesEl = document.getElementById("cr-moves");
+      const moveButtons = [];
+      function buildMoveList() {
+        for (let i = 0; i < PLIES.length; i += 2) {
+          const no = i / 2 + 1;
+          const noCell = document.createElement("span");
+          noCell.className = "cr-moveno text-small tabular-nums";
+          noCell.textContent = no + ".";
+          movesEl.appendChild(noCell);
+          for (let k = 0; k < 2; k++) {
+            const index = i + k + 1;
+            const ply = PLIES[index - 1];
+            if (!ply) {
+              movesEl.appendChild(document.createElement("span"));
+              continue;
+            }
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn btn-ghost btn-block";
+            btn.textContent = ply.san;
+            btn.setAttribute("aria-pressed", "false");
+            btn.setAttribute("aria-label", no + (k === 0 ? "." : "...") + " " + ply.san);
+            btn.addEventListener("click", () => {
+              stop();
+              setIndex(index, false);
+            });
+            movesEl.appendChild(btn);
+            moveButtons[index] = btn;
+          }
+        }
+      }
+
+      /* ---------------- 渲染 ---------------- */
+      const plyLabelEl = document.getElementById("cr-ply-label");
+      const noteEl = document.getElementById("cr-note");
+      const playBtn = document.getElementById("cr-play");
+      let index = 0;
+      let timer = null;
+
+      function setIndex(next, animate) {
+        const clamped = Math.max(0, Math.min(PLIES.length, next));
+        const stepped = Math.abs(clamped - index) === 1;
+        index = clamped;
+
+        const ply = index > 0 ? PLIES[index - 1] : null;
+        const fen = ply ? ply.fen : START_FEN;
+        const pos = parseFen(fen);
+        const marks = ply || {};
+        const from = ply ? ply.uci.slice(0, 2) : null;
+        const to = ply ? ply.uci.slice(2, 4) : null;
+
+        drawBoard(pos, marks, from, to);
+        svgTitle.textContent = "棋盘：" + fen;
+        svgDesc.textContent = ply
+          ? "第 " + Math.ceil(index / 2) + " 回合，" + ply.san + " 之后"
+          : "起始局面";
+
+        if (ply && animate && stepped) {
+          const node = svg.querySelector('[data-square="' + to + '"]');
+          const a = xy(from), b = xy(to);
+          const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (node && a && b && !reduce && node.animate) {
+            node.animate(
+              [{ transform: "translate(" + (a[0] - b[0]) + "px," + (a[1] - b[1]) + "px)" },
+               { transform: "translate(0,0)" }],
+              { duration: 220, easing: "cubic-bezier(.2,.8,.3,1)" }
+            );
+          }
+        }
+
+        const info = evalOf(index);
+        const value = Math.max(-5, Math.min(5, pawns(info, pos.active)));
+        const pct = Math.max(3, Math.min(97, 50 + (value / 10) * 100));
+        barFill.style.transition = "height 240ms ease";
+        barFill.style.height = pct + "%";
+        bar.setAttribute("aria-label", "评估条：" + evalText(info, pos.active));
+
+        plyLabelEl.textContent = ply
+          ? Math.ceil(index / 2) + (index % 2 === 1 ? ". " : "... ") + ply.san
+          : "起始局面";
+        evalLabelEl.textContent = "评估 " + evalText(info, pos.active);
+        noteEl.textContent = ply ? ply.note
+          : (GAME.startNote || "起始局面。点着法列表任意一手跳过去，或按「自动播放」逐步看。");
+
+        moveButtons.forEach((btn, i) => {
+          if (btn) btn.setAttribute("aria-pressed", i === index ? "true" : "false");
+        });
+      }
+
+      /* ---------------- 自动播放 ---------------- */
+      const speedEl = document.getElementById("cr-speed");
+      const prevBtn = document.getElementById("cr-prev");
+      const nextBtn = document.getElementById("cr-next");
+
+      function stop() {
+        if (timer) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+        playBtn.setAttribute("aria-pressed", "false");
+        playBtn.textContent = "自动播放";
+      }
+      function start() {
+        if (timer) return;
+        const delay = Number(speedEl.value) || 1200;
+        if (index >= PLIES.length) setIndex(0, false);
+        playBtn.setAttribute("aria-pressed", "true");
+        playBtn.textContent = "暂停";
+        timer = window.setInterval(() => {
+          if (index >= PLIES.length) {
+            stop();
+            return;
+          }
+          setIndex(index + 1, true);
+        }, delay);
+      }
+
+      playBtn.addEventListener("click", () => (timer ? stop() : start()));
+      prevBtn.addEventListener("click", () => {
+        stop();
+        setIndex(index - 1, true);
+      });
+      nextBtn.addEventListener("click", () => {
+        stop();
+        setIndex(index + 1, true);
+      });
+      speedEl.addEventListener("change", () => {
+        if (timer) {
+          stop();
+          start();
+        }
+      });
+
+      buildMoveList();
+      document.getElementById("cr-title").textContent = GAME.title || "";
+      document.getElementById("cr-meta").textContent = GAME.meta || "";
+      document.getElementById("cr-engine").textContent = GAME.engineLabel || "";
+      if (!SHOW_EVAL) {
+        document.getElementById("cr-bar").hidden = true;
+        document.getElementById("cr-eval-label").hidden = true;
+      }
+      setIndex(0, false);
+    })();
+  </script>
+</div>

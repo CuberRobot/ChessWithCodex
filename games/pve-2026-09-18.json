@@ -1,0 +1,347 @@
+{
+  "id": "pve-2026-09-18",
+  "title": "人机对战 · 2026-09-18",
+  "meta": "对手强度 2 · 你执白 · 1-0",
+  "headers": {
+    "Event": "Codex PvE",
+    "Site": "本地",
+    "Date": "2026.09.18",
+    "Round": "?",
+    "White": "你",
+    "Black": "ChessPlugin（强度 2）",
+    "Result": "1-0"
+  },
+  "start_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "start_cp": 25,
+  "start_mate": null,
+  "start_note": "对手是强度 2（Skill Level 4），它的失误是设计使然，所以这盘的重点不是「赢」，而是第 8 手你把一个赢棋交出去、第 10 手对手又交回来。评估都是 Stockfish 19 深度 16 重算的。",
+  "engine": {
+    "name": "Stockfish 19",
+    "path": "/opt/homebrew/bin/stockfish",
+    "depth": 16,
+    "threads": 4
+  },
+  "source": "pgn/pve-2026-09-18.pgn",
+  "created": "2026-09-18T20:04:18",
+  "analyzed": "2026-09-18T20:04:40",
+  "plies": [
+    {
+      "ply": 1,
+      "san": "d4",
+      "uci": "d2d4",
+      "fen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1",
+      "cp": 18,
+      "mate": null
+    },
+    {
+      "ply": 2,
+      "san": "g6",
+      "uci": "g7g6",
+      "fen": "rnbqkbnr/pppppp1p/6p1/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
+      "cp": 65,
+      "mate": null
+    },
+    {
+      "ply": 3,
+      "san": "Nf3",
+      "uci": "g1f3",
+      "fen": "rnbqkbnr/pppppp1p/6p1/8/3P4/5N2/PPP1PPPP/RNBQKB1R b KQkq - 1 2",
+      "cp": 37,
+      "mate": null
+    },
+    {
+      "ply": 4,
+      "san": "b5",
+      "uci": "b7b5",
+      "fen": "rnbqkbnr/p1pppp1p/6p1/1p6/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 0 3",
+      "cp": 152,
+      "mate": null,
+      "note": "黑方送兵：引擎立刻从 +0.37 跳到 +1.52，4.Bxb5 白吃一兵。"
+    },
+    {
+      "ply": 5,
+      "san": "e4",
+      "uci": "e2e4",
+      "fen": "rnbqkbnr/p1pppp1p/6p1/1p6/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3",
+      "cp": 135,
+      "mate": null
+    },
+    {
+      "ply": 6,
+      "san": "Na6",
+      "uci": "b8a6",
+      "fen": "r1bqkbnr/p1pppp1p/n5p1/1p6/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 1 4",
+      "cp": 356,
+      "mate": null
+    },
+    {
+      "ply": 7,
+      "san": "Bxb5",
+      "uci": "f1b5",
+      "fen": "r1bqkbnr/p1pppp1p/n5p1/1B6/3PP3/5N2/PPP2PPP/RNBQK2R b KQkq - 0 4",
+      "cp": 330,
+      "mate": null
+    },
+    {
+      "ply": 8,
+      "san": "e6",
+      "uci": "e7e6",
+      "fen": "r1bqkbnr/p1pp1p1p/n3p1p1/1B6/3PP3/5N2/PPP2PPP/RNBQK2R w KQkq - 0 5",
+      "cp": 449,
+      "mate": null
+    },
+    {
+      "ply": 9,
+      "san": "Bxa6",
+      "uci": "b5a6",
+      "fen": "r1bqkbnr/p1pp1p1p/B3p1p1/8/3PP3/5N2/PPP2PPP/RNBQK2R b KQkq - 0 5",
+      "cp": 146,
+      "mate": null,
+      "note": "这里其实该留住这只象：吃马换象之后评估从 +4.49 掉回 +1.46，等于把三兵的便宜又还回去了。"
+    },
+    {
+      "ply": 10,
+      "san": "Bxa6",
+      "uci": "c8a6",
+      "fen": "r2qkbnr/p1pp1p1p/b3p1p1/8/3PP3/5N2/PPP2PPP/RNBQK2R w KQkq - 0 6",
+      "cp": 159,
+      "mate": null
+    },
+    {
+      "ply": 11,
+      "san": "c3",
+      "uci": "c2c3",
+      "fen": "r2qkbnr/p1pp1p1p/b3p1p1/8/3PP3/2P2N2/PP3PPP/RNBQK2R b KQkq - 0 6",
+      "cp": 102,
+      "mate": null
+    },
+    {
+      "ply": 12,
+      "san": "Qc8",
+      "uci": "d8c8",
+      "fen": "r1q1kbnr/p1pp1p1p/b3p1p1/8/3PP3/2P2N2/PP3PPP/RNBQK2R w KQkq - 1 7",
+      "cp": 169,
+      "mate": null
+    },
+    {
+      "ply": 13,
+      "san": "Nbd2",
+      "uci": "b1d2",
+      "fen": "r1q1kbnr/p1pp1p1p/b3p1p1/8/3PP3/2P2N2/PP1N1PPP/R1BQK2R b KQkq - 2 7",
+      "cp": 168,
+      "mate": null
+    },
+    {
+      "ply": 14,
+      "san": "f6",
+      "uci": "f7f6",
+      "fen": "r1q1kbnr/p1pp3p/b3ppp1/8/3PP3/2P2N2/PP1N1PPP/R1BQK2R w KQkq - 0 8",
+      "cp": 252,
+      "mate": null
+    },
+    {
+      "ply": 15,
+      "san": "Nc4",
+      "uci": "d2c4",
+      "fen": "r1q1kbnr/p1pp3p/b3ppp1/8/2NPP3/2P2N2/PP3PPP/R1BQK2R b KQkq - 1 8",
+      "cp": -432,
+      "mate": null,
+      "note": "全盘最严重的一手。此时你是 +2.52 的优势局面，但这只马跳到了 a6 象的斜线上（a6-b5-c4），黑方 8...Bxc4 直接白吃，评估翻成 -4.32——从赢棋变成输棋。"
+    },
+    {
+      "ply": 16,
+      "san": "Bxc4",
+      "uci": "a6c4",
+      "fen": "r1q1kbnr/p1pp3p/4ppp1/8/2bPP3/2P2N2/PP3PPP/R1BQK2R w KQkq - 0 9",
+      "cp": -439,
+      "mate": null,
+      "note": "黑方当然吃。现在轮到对手领先约 4 兵。"
+    },
+    {
+      "ply": 17,
+      "san": "Bf4",
+      "uci": "c1f4",
+      "fen": "r1q1kbnr/p1pp3p/4ppp1/8/2bPPB2/2P2N2/PP3PPP/R2QK2R b KQkq - 1 9",
+      "cp": -554,
+      "mate": null
+    },
+    {
+      "ply": 18,
+      "san": "Ke7",
+      "uci": "e8e7",
+      "fen": "r1q2bnr/p1ppk2p/4ppp1/8/2bPPB2/2P2N2/PP3PPP/R2QK2R w KQ - 2 10",
+      "cp": -316,
+      "mate": null
+    },
+    {
+      "ply": 19,
+      "san": "Qa4",
+      "uci": "d1a4",
+      "fen": "r1q2bnr/p1ppk2p/4ppp1/8/Q1bPPB2/2P2N2/PP3PPP/R3K2R b KQ - 3 10",
+      "cp": -483,
+      "mate": null
+    },
+    {
+      "ply": 20,
+      "san": "Ke8",
+      "uci": "e7e8",
+      "fen": "r1q1kbnr/p1pp3p/4ppp1/8/Q1bPPB2/2P2N2/PP3PPP/R3K2R w KQ - 4 11",
+      "cp": 356,
+      "mate": null,
+      "note": "对手把到手的赢棋送回来：它先把王走到 e7，又走回 e8。评估从黑方 +3.16 翻成白方 +3.56，一步亏掉近 7 兵。"
+    },
+    {
+      "ply": 21,
+      "san": "Qxc4",
+      "uci": "a4c4",
+      "fen": "r1q1kbnr/p1pp3p/4ppp1/8/2QPPB2/2P2N2/PP3PPP/R3K2R b KQ - 0 11",
+      "cp": 360,
+      "mate": null
+    },
+    {
+      "ply": 22,
+      "san": "Kf7",
+      "uci": "e8f7",
+      "fen": "r1q2bnr/p1pp1k1p/4ppp1/8/2QPPB2/2P2N2/PP3PPP/R3K2R w KQ - 1 12",
+      "cp": 499,
+      "mate": null
+    },
+    {
+      "ply": 23,
+      "san": "e5",
+      "uci": "e4e5",
+      "fen": "r1q2bnr/p1pp1k1p/4ppp1/4P3/2QP1B2/2P2N2/PP3PPP/R3K2R b KQ - 0 12",
+      "cp": 347,
+      "mate": null
+    },
+    {
+      "ply": 24,
+      "san": "h5",
+      "uci": "h7h5",
+      "fen": "r1q2bnr/p1pp1k2/4ppp1/4P2p/2QP1B2/2P2N2/PP3PPP/R3K2R w KQ - 0 13",
+      "cp": 627,
+      "mate": null
+    },
+    {
+      "ply": 25,
+      "san": "exf6",
+      "uci": "e5f6",
+      "fen": "r1q2bnr/p1pp1k2/4pPp1/7p/2QP1B2/2P2N2/PP3PPP/R3K2R b KQ - 0 13",
+      "cp": 500,
+      "mate": null
+    },
+    {
+      "ply": 26,
+      "san": "Kxf6",
+      "uci": "f7f6",
+      "fen": "r1q2bnr/p1pp4/4pkp1/7p/2QP1B2/2P2N2/PP3PPP/R3K2R w KQ - 0 14",
+      "cp": 902,
+      "mate": null
+    },
+    {
+      "ply": 27,
+      "san": "Be5+",
+      "uci": "f4e5",
+      "fen": "r1q2bnr/p1pp4/4pkp1/4B2p/2QP4/2P2N2/PP3PPP/R3K2R b KQ - 1 14",
+      "cp": 906,
+      "mate": null
+    },
+    {
+      "ply": 28,
+      "san": "Kf7",
+      "uci": "f6f7",
+      "fen": "r1q2bnr/p1pp1k2/4p1p1/4B2p/2QP4/2P2N2/PP3PPP/R3K2R w KQ - 2 15",
+      "cp": 900,
+      "mate": null
+    },
+    {
+      "ply": 29,
+      "san": "Bxh8",
+      "uci": "e5h8",
+      "fen": "r1q2bnB/p1pp1k2/4p1p1/7p/2QP4/2P2N2/PP3PPP/R3K2R b KQ - 0 15",
+      "cp": 868,
+      "mate": null,
+      "note": "对手的王一路走到 f6、f7，把 h8 的车白送。到这儿已经是 +8.68，剩下的只是收尾。"
+    },
+    {
+      "ply": 30,
+      "san": "Qd8",
+      "uci": "c8d8",
+      "fen": "r2q1bnB/p1pp1k2/4p1p1/7p/2QP4/2P2N2/PP3PPP/R3K2R w KQ - 1 16",
+      "cp": 1028,
+      "mate": null
+    },
+    {
+      "ply": 31,
+      "san": "Ne5+",
+      "uci": "f3e5",
+      "fen": "r2q1bnB/p1pp1k2/4p1p1/4N2p/2QP4/2P5/PP3PPP/R3K2R b KQ - 2 16",
+      "cp": 1032,
+      "mate": null
+    },
+    {
+      "ply": 32,
+      "san": "Ke7",
+      "uci": "f7e7",
+      "fen": "r2q1bnB/p1ppk3/4p1p1/4N2p/2QP4/2P5/PP3PPP/R3K2R w KQ - 3 17",
+      "cp": 1190,
+      "mate": null
+    },
+    {
+      "ply": 33,
+      "san": "Nxg6+",
+      "uci": "e5g6",
+      "fen": "r2q1bnB/p1ppk3/4p1N1/7p/2QP4/2P5/PP3PPP/R3K2R b KQ - 0 17",
+      "cp": 1008,
+      "mate": null
+    },
+    {
+      "ply": 34,
+      "san": "Kd6",
+      "uci": "e7d6",
+      "fen": "r2q1bnB/p1pp4/3kp1N1/7p/2QP4/2P5/PP3PPP/R3K2R w KQ - 1 18",
+      "cp": null,
+      "mate": 1
+    },
+    {
+      "ply": 35,
+      "san": "Qc5#",
+      "uci": "c4c5",
+      "fen": "r2q1bnB/p1pp4/3kp1N1/2Q4p/3P4/2P5/PP3PPP/R3K2R b KQ - 2 18",
+      "cp": null,
+      "mate": 0,
+      "note": "杀。王在 d6：c6 被后的直线管着，d5 被后贴着，e5 有自己的马但那只马被后保护着，e7 被 g6 的马管着，d7 和 e6 被自己的兵堵死；黑方也没有任何子能吃 c5 的后。",
+      "arrows": [
+        {
+          "from": "c5",
+          "to": "d6",
+          "tone": "best"
+        }
+      ],
+      "highlights": [
+        {
+          "square": "d6",
+          "tone": "check",
+          "style": "ring"
+        },
+        {
+          "square": "e7",
+          "tone": "focus",
+          "style": "dot"
+        },
+        {
+          "square": "d5",
+          "tone": "focus",
+          "style": "dot"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "positions": 36,
+    "cache_hits": 36,
+    "engine_queries": 0,
+    "seconds": 0.15,
+    "cache_size": 99
+  }
+}

@@ -1,0 +1,8 @@
+[Event "Codex PvE"]
+[Site "本地"]
+[Date "2026.09.18"]
+[White "你"]
+[Black "ChessPlugin（强度 2）"]
+[Result "1-0"]
+
+1. d4 g6 2. Nf3 b5 3. e4 Na6 4. Bxb5 e6 5. Bxa6 Bxa6 6. c3 Qc8 7. Nbd2 f6 8. Nc4 Bxc4 9. Bf4 Ke7 10. Qa4 Ke8 11. Qxc4 Kf7 12. e5 h5 13. exf6 Kxf6 14. Be5+ Kf7 15. Bxh8 Qd8 16. Ne5+ Ke7 17. Nxg6+ Kd6 18. Qc5# 1-0

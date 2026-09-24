@@ -1,0 +1,243 @@
+{
+  "id": "legal-trap-1750",
+  "title": "Légal 的陷阱",
+  "meta": "巴黎 1750 · 白 Légal / 黑 Saint Brie · 结果 1-0",
+  "headers": {
+    "Event": "Paris casual",
+    "Site": "Paris FRA",
+    "Date": "1750.??.??",
+    "Round": "-",
+    "White": "De Legal, Francois Antoine",
+    "Black": "Saint Brie",
+    "Result": "1-0",
+    "ECO": "C41"
+  },
+  "start_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "start_cp": 25,
+  "start_mate": null,
+  "engine": {
+    "name": "Stockfish 19",
+    "path": "/opt/homebrew/bin/stockfish",
+    "depth": 16,
+    "threads": 4
+  },
+  "source": "pgn/legal-trap-1750.pgn",
+  "created": "2026-09-12T23:36:10",
+  "analyzed": "2026-09-12T23:36:35",
+  "plies": [
+    {
+      "ply": 1,
+      "san": "e4",
+      "uci": "e2e4",
+      "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+      "cp": 29,
+      "mate": null,
+      "note": "白方先抢中心：e4 兵控制 d5 和 f5。"
+    },
+    {
+      "ply": 2,
+      "san": "e5",
+      "uci": "e7e5",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "cp": 28,
+      "mate": null,
+      "note": "黑方对称回应，双方在中央顶住。"
+    },
+    {
+      "ply": 3,
+      "san": "Nf3",
+      "uci": "g1f3",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+      "cp": 24,
+      "mate": null,
+      "note": "顺手攻击 e5 兵，黑方得决定怎么守。"
+    },
+    {
+      "ply": 4,
+      "san": "d6",
+      "uci": "d7d6",
+      "fen": "rnbqkbnr/ppp2ppp/3p4/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3",
+      "cp": 53,
+      "mate": null,
+      "note": "用兵守住 e5，代价是 d6 这格以后会挡住自己的王。"
+    },
+    {
+      "ply": 5,
+      "san": "Bc4",
+      "uci": "f1c4",
+      "fen": "rnbqkbnr/ppp2ppp/3p4/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1 3",
+      "cp": 36,
+      "mate": null,
+      "note": "白象瞄上 f7，整盘棋的伏笔埋在这里。",
+      "highlights": [
+        {
+          "square": "f7",
+          "tone": "focus",
+          "style": "ring"
+        }
+      ]
+    },
+    {
+      "ply": 6,
+      "san": "Bg4",
+      "uci": "c8g4",
+      "fen": "rn1qkbnr/ppp2ppp/3p4/4p3/2B1P1b1/5N2/PPPP1PPP/RNBQK2R w KQkq - 2 4",
+      "cp": 84,
+      "mate": null,
+      "note": "黑象出来、钉住 f3 马。问题是：它自己没有根。",
+      "highlights": [
+        {
+          "square": "g4",
+          "tone": "focus",
+          "style": "ring"
+        }
+      ]
+    },
+    {
+      "ply": 7,
+      "san": "Nc3",
+      "uci": "b1c3",
+      "fen": "rn1qkbnr/ppp2ppp/3p4/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 3 4",
+      "cp": 50,
+      "mate": null,
+      "note": "白方不理会，继续出子。陷阱已经摆好了。"
+    },
+    {
+      "ply": 8,
+      "san": "g6",
+      "uci": "g7g6",
+      "fen": "rn1qkbnr/ppp2p1p/3p2p1/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 5",
+      "cp": 247,
+      "mate": null,
+      "note": "引擎说这一手就已经错了：黑方以为在加固，其实是把弃后的机会送到白方手里。",
+      "markers": [
+        {
+          "square": "g6",
+          "text": "?!",
+          "shape": "glyph",
+          "tone": "mistake"
+        }
+      ]
+    },
+    {
+      "ply": 9,
+      "san": "Nxe5",
+      "uci": "f3e5",
+      "fen": "rn1qkbnr/ppp2p1p/3p2p1/4N3/2B1P1b1/2N5/PPPP1PPP/R1BQK2R b KQkq - 0 5",
+      "cp": 260,
+      "mate": null,
+      "note": "弃后！黑方若 5...dxe5，6.Qxg4 白赚一兵一象；若贪吃王后，就是杀。",
+      "arrows": [
+        {
+          "from": "f3",
+          "to": "e5",
+          "tone": "best"
+        }
+      ]
+    },
+    {
+      "ply": 10,
+      "san": "Bxd1",
+      "uci": "g4d1",
+      "fen": "rn1qkbnr/ppp2p1p/3p2p1/4N3/2B1P3/2N5/PPPP1PPP/R1BbK2R w KQkq - 0 6",
+      "cp": null,
+      "mate": 2,
+      "note": "黑方吃掉了王后，赢了一个子，也输掉了这一局——接下来两步都是被迫的。",
+      "arrows": [
+        {
+          "from": "g4",
+          "to": "d1",
+          "tone": "blunder"
+        }
+      ],
+      "markers": [
+        {
+          "square": "d1",
+          "text": "??",
+          "shape": "glyph",
+          "tone": "blunder"
+        }
+      ]
+    },
+    {
+      "ply": 11,
+      "san": "Bxf7+",
+      "uci": "c4f7",
+      "fen": "rn1qkbnr/ppp2B1p/3p2p1/4N3/4P3/2N5/PPPP1PPP/R1BbK2R b KQkq - 0 6",
+      "cp": null,
+      "mate": 1,
+      "note": "将军。黑王只有 e7 这一个格子能去。",
+      "arrows": [
+        {
+          "from": "c4",
+          "to": "f7",
+          "tone": "best"
+        }
+      ],
+      "highlights": [
+        {
+          "square": "e8",
+          "tone": "check",
+          "style": "ring"
+        }
+      ]
+    },
+    {
+      "ply": 12,
+      "san": "Ke7",
+      "uci": "e8e7",
+      "fen": "rn1q1bnr/ppp1kB1p/3p2p1/4N3/4P3/2N5/PPPP1PPP/R1BbK2R w KQ - 1 7",
+      "cp": null,
+      "mate": 1,
+      "note": "唯一的一步，但 e7 这格很冷。",
+      "highlights": [
+        {
+          "square": "e7",
+          "tone": "check",
+          "style": "ring"
+        }
+      ]
+    },
+    {
+      "ply": 13,
+      "san": "Nd5#",
+      "uci": "c3d5",
+      "fen": "rn1q1bnr/ppp1kB1p/3p2p1/3NN3/4P3/8/PPPP1PPP/R1BbK2R b KQ - 2 7",
+      "cp": null,
+      "mate": 0,
+      "note": "杀。两个马封死了所有退路：e5 的马管 d7，d5 的马管 f6，f7 的象管 e6 和 e8。",
+      "arrows": [
+        {
+          "from": "c3",
+          "to": "d5",
+          "tone": "best"
+        }
+      ],
+      "highlights": [
+        {
+          "square": "e7",
+          "tone": "check",
+          "style": "ring"
+        },
+        {
+          "square": "d7",
+          "tone": "focus",
+          "style": "dot"
+        },
+        {
+          "square": "f6",
+          "tone": "focus",
+          "style": "dot"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "positions": 14,
+    "cache_hits": 14,
+    "engine_queries": 0,
+    "seconds": 0.26,
+    "cache_size": 14
+  },
+  "start_note": "开局。这盘棋只有七个回合，却藏着一个「吃掉王后就输棋」的陷阱——点着法列表里任意一手跳过去，或者按自动播放慢慢看。"
+}

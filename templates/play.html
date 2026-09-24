@@ -1,0 +1,841 @@
+<div id="pl-root">
+  <style>
+    #pl-root {
+      --pl-max: 470px;
+      --pl-gap: 12px;
+    }
+    #pl-root figure {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 736px;
+    }
+    #pl-root [hidden] {
+      display: none !important;
+    }
+    #pl-root .pl-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4px 14px;
+      color: var(--muted-foreground);
+    }
+    #pl-root .pl-main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--pl-gap);
+      align-items: flex-start;
+    }
+    #pl-root .pl-boardwrap {
+      position: relative;
+      flex: 1 1 300px;
+      min-width: 250px;
+      max-width: var(--pl-max);
+    }
+    /* 升变选择：贴在升变那一格上，不跑到图外面去 */
+    #pl-root .pl-promo {
+      position: absolute;
+      width: 12.5%;
+      height: 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 2px;
+      background: var(--popover);
+      color: var(--popover-foreground);
+      border-radius: 4px;
+      box-shadow: 0 2px 12px rgb(0 0 0 / 28%);
+      z-index: 2;
+    }
+    #pl-root .pl-promo-btn {
+      flex: 1 1 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+    }
+    #pl-root .pl-promo-btn:hover,
+    #pl-root .pl-promo-btn:focus-visible {
+      background: var(--accent);
+    }
+    #pl-root svg.pl-board {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #pl-root .pl-side {
+      flex: 1 1 205px;
+      min-width: 190px;
+      max-width: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #pl-root .pl-captured {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1px;
+      min-height: 24px;
+    }
+    #pl-root .pl-captured svg {
+      display: block;
+    }
+    #pl-root .pl-moves {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: 1px 4px;
+      align-content: start;
+      font-variant-numeric: tabular-nums;
+    }
+    #pl-root .pl-moveno {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 2px;
+      color: var(--muted-foreground);
+    }
+    #pl-root .pl-move {
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    #pl-root .pl-move.pl-last {
+      background: var(--accent);
+      color: var(--accent-foreground);
+    }
+    #pl-root .pl-reviewed {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+
+  <figure>
+    <div class="pl-status text-small">
+      <span id="pl-turn" aria-live="polite">准备中…</span>
+      <span id="pl-engine-status" class="text-muted"></span>
+      <span id="pl-material"></span>
+    </div>
+    <div class="pl-status text-small tabular-nums">
+      <span id="pl-clock-white"></span>
+      <span id="pl-clock-black"></span>
+    </div>
+
+    <div class="pl-main">
+      <div class="pl-boardwrap" id="pl-boardwrap"></div>
+      <div class="pl-side">
+        <div class="pl-captured" id="pl-cap-b" aria-label="白方吃掉的子"></div>
+        <div class="pl-captured" id="pl-cap-w" aria-label="黑方吃掉的子"></div>
+        <div class="pl-moves" id="pl-moves" role="group" aria-label="着法列表"></div>
+      </div>
+    </div>
+
+    <div class="viz-controls">
+      <label class="form-label" for="pl-level">对手强度</label>
+      <select class="form-select" id="pl-level">
+        <option value="1">1 · 很弱</option>
+        <option value="2" selected>2 · 休闲</option>
+        <option value="3">3 · 中等</option>
+        <option value="4">4 · 认真下</option>
+      </select>
+      <label class="form-label" for="pl-time">时限</label>
+      <select class="form-select" id="pl-time">
+        <option value="none">不限时</option>
+        <option value="60+0">1+0 子弹</option>
+        <option value="120+1">2+1 子弹</option>
+        <option value="180+2">3+2 超快棋</option>
+        <option value="300+3" selected>5+3 超快棋</option>
+        <option value="600+0">10+0 快棋</option>
+        <option value="900+10">15+10 快棋</option>
+      </select>
+      <button type="button" class="btn" id="pl-undo">悔棋</button>
+      <label class="form-label" for="pl-engine-mode">对手引擎</label>
+      <select class="form-select" id="pl-engine-mode">
+        <option value="real" selected>真 Stockfish（强）</option>
+        <option value="light">轻量（更稳、更省）</option>
+      </select>
+      <button type="button" class="btn" id="pl-restart">重新开始</button>
+      <button type="button" class="btn" id="pl-review">让 Codex 点评</button>
+    </div>
+
+    <figcaption class="text-small" id="pl-note" aria-live="polite"></figcaption>
+    <div class="text-small pl-reviewed" id="pl-fallback" hidden></div>
+  </figure>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const root = document.getElementById("pl-root");
+      if (!root || root.dataset.plReady === "1") return;
+      root.dataset.plReady = "1";
+
+      __PIECES_RUNTIME__
+      __PIECE_SETS__
+      /* 规则库：chess.js（MIT）内嵌，离线可用 */
+      __CHESS_JS__
+      /* 真引擎：自己编译的单文件 Stockfish（wasm 内嵌），以 gzip+base64 内嵌；为空则只用轻量引擎 */
+      const ENGINE_B64_GZ = "__ENGINE_B64_GZ__";
+
+      const CFG = __PLAY_JSON__;
+      const ORIENTATION = CFG.playerColor === "b" ? "black" : "white";
+      const THEME = { light: "light-dark(#f0d9b5, #d9c39c)", dark: "light-dark(#b58863, #9a7150)" };
+      const FILES = "abcdefgh";
+      const NS = "http://www.w3.org/2000/svg";
+      const VALUE = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
+      const GLYPH_VALUE = { p: "兵", n: "马", b: "象", r: "车", q: "后" };
+
+      const game = new Chess(CFG.fen || undefined);
+      const pieces = makePieceRenderer(PIECE_SETS, CFG.pieces || "chessnut");
+      let selected = null;
+      let legalDots = [];
+      let thinking = false;
+      let pendingPromotion = null;
+      let lastMove = null;
+      let result = "";
+      let useQuiesce = false;
+      const clock = { ms: { w: 0, b: 0 }, inc: 0, on: false, base: 0, running: false, last: 0 };
+
+      /* ---------------- 棋盘绘制 ---------------- */
+      const svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("class", "pl-board");
+      svg.setAttribute("viewBox", "0 0 8 8");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "国际象棋棋盘，点击棋子再点落点走子");
+      document.getElementById("pl-boardwrap").appendChild(svg);
+
+      const xy = (square) => {
+        const f = FILES.indexOf(square[0]);
+        const r = Number(square[1]) - 1;
+        return ORIENTATION === "black" ? [7 - f, r] : [f, 7 - r];
+      };
+      const squareAt = (vx, vy) => {
+        const f = ORIENTATION === "black" ? 7 - vx : vx;
+        const r = ORIENTATION === "black" ? vy : 7 - vy;
+        return FILES[f] + (r + 1);
+      };
+      const isLight = (vx, vy) => (vx + vy) % 2 === 0;
+
+      function el(tag, attrs) {
+        const node = document.createElementNS(NS, tag);
+        for (const key in attrs || {}) {
+          const value = attrs[key];
+          if (value === null || value === undefined || value === false) continue;
+          node.setAttribute(key, String(value));
+        }
+        return node;
+      }
+      function text(value, attrs) {
+        const node = el("text", attrs);
+        node.textContent = value;
+        return node;
+      }
+
+      function draw() {
+        const g = el("g", {});
+        g.appendChild(el("rect", { x: 0, y: 0, width: 8, height: 8, fill: THEME.light }));
+        for (let vx = 0; vx < 8; vx++) {
+          for (let vy = 0; vy < 8; vy++) {
+            if (!isLight(vx, vy)) {
+              g.appendChild(el("rect", { x: vx, y: vy, width: 1, height: 1, fill: THEME.dark }));
+            }
+          }
+        }
+
+        if (lastMove) {
+          for (const square of [lastMove.from, lastMove.to]) {
+            const p = xy(square);
+            if (p) g.appendChild(el("rect", {
+              x: p[0], y: p[1], width: 1, height: 1, fill: "var(--yellow)", opacity: 0.22
+            }));
+          }
+        }
+        if (selected) {
+          const p = xy(selected);
+          if (p) g.appendChild(el("rect", {
+            x: p[0], y: p[1], width: 1, height: 1, fill: "var(--blue)", opacity: 0.28
+          }));
+        }
+
+        for (const row of game.board()) {
+          for (const sq of row) {
+            if (!sq) continue;
+            const p = xy(sq.square);
+            const node = pieces.node(sq.color, sq.type.toUpperCase(), p);
+            node.setAttribute("data-square", sq.square);
+            g.appendChild(node);
+          }
+        }
+
+        // 可落点：空格画点，吃子画圈
+        for (const move of legalDots) {
+          const p = xy(move.to);
+          if (!p) continue;
+          const occupied = game.get(move.to);
+          if (occupied) {
+            g.appendChild(el("circle", {
+              cx: p[0] + 0.5, cy: p[1] + 0.5, r: 0.45, fill: "none",
+              stroke: "var(--blue)", "stroke-width": 0.08, opacity: 0.5
+            }));
+          } else {
+            g.appendChild(el("circle", {
+              cx: p[0] + 0.5, cy: p[1] + 0.5, r: 0.15, fill: "var(--blue)", opacity: 0.45
+            }));
+          }
+        }
+
+        for (let vx = 0; vx < 8; vx++) {
+          for (let vy = 0; vy < 8; vy++) {
+            const fill = isLight(vx, vy) ? THEME.dark : THEME.light;
+            const square = squareAt(vx, vy);
+            if (vx === 0) {
+              g.appendChild(text(square[1], {
+                x: vx + 0.07, y: vy + 0.28, "text-anchor": "start",
+                "font-size": 0.21, fill: fill, opacity: 0.9, "font-weight": 500
+              }));
+            }
+            if (vy === 7) {
+              g.appendChild(text(square[0], {
+                x: vx + 0.92, y: vy + 0.95, "text-anchor": "end",
+                "font-size": 0.21, fill: fill, opacity: 0.9, "font-weight": 500
+              }));
+            }
+          }
+        }
+        g.appendChild(el("rect", {
+          x: 0.012, y: 0.012, width: 7.976, height: 7.976,
+          fill: "none", stroke: "var(--border)", "stroke-width": 0.024
+        }));
+        svg.replaceChildren(g);
+      }
+
+      /* ---------------- 吃子和子力 ---------------- */
+      function capturedBy(color) {
+        // 起始局面减去当前局面：某一方少掉的子，就是被对方吃掉的
+        const start = new Chess(CFG.fen || undefined).board();
+        const now = game.board();
+        const count = (board, c, t) => board.flat().filter((s) => s && s.color === c && s.type === t).length;
+        const lost = [];
+        for (const t of ["q", "r", "b", "n", "p"]) {
+          const missing = count(start, color, t) - count(now, color, t);
+          for (let i = 0; i < missing; i++) lost.push(t);
+        }
+        return lost;
+      }
+
+      function pieceIcon(color, type, size) {
+        const wrap = document.createElementNS(NS, "svg");
+        wrap.setAttribute("width", size);
+        wrap.setAttribute("height", size);
+        wrap.setAttribute("viewBox", "0 0 1 1");
+        wrap.setAttribute("aria-hidden", "true");
+        const node = pieces.node(color, type.toUpperCase(), [0, 0], 0.98);
+        wrap.appendChild(node);
+        return wrap;
+      }
+
+      function renderSide() {
+        const capB = document.getElementById("pl-cap-b");  // 白方吃掉的（即黑方少掉的）
+        const capW = document.getElementById("pl-cap-w");
+        capB.replaceChildren();
+        capW.replaceChildren();
+        const lostBlack = capturedBy("b");
+        const lostWhite = capturedBy("w");
+        for (const type of lostBlack) capB.appendChild(pieceIcon("b", type, 22));
+        for (const type of lostWhite) capW.appendChild(pieceIcon("w", type, 22));
+
+        const total = (lost) => lost.reduce((sum, t) => sum + VALUE[t], 0);
+        const diff = total(lostBlack) - total(lostWhite);   // 正数 = 白方多子
+        const parts = [];
+        if (diff > 0) parts.push("白方多 " + diff + " 分");
+        else if (diff < 0) parts.push("黑方多 " + (-diff) + " 分");
+        else parts.push("子力相当");
+        if (game.inCheck && game.inCheck()) parts.push(game.turn() === "w" ? "白方被将军" : "黑方被将军");
+        document.getElementById("pl-material").textContent = parts.join(" · ");
+      }
+
+      function renderMoves() {
+        const history = game.history({ verbose: true });
+        const wrap = document.getElementById("pl-moves");
+        wrap.replaceChildren();
+        for (let i = 0; i < history.length; i += 2) {
+          const no = document.createElement("span");
+          no.className = "pl-moveno text-small";
+          no.textContent = (i / 2 + 1) + ".";
+          wrap.appendChild(no);
+          for (let k = 0; k < 2; k++) {
+            const move = history[i + k];
+            const cell = document.createElement("span");
+            cell.className = "pl-move text-small" + (i + k === history.length - 1 ? " pl-last" : "");
+            cell.textContent = move ? move.san : "";
+            wrap.appendChild(cell);
+          }
+        }
+      }
+
+      function setNote(message) {
+        document.getElementById("pl-note").textContent = message;
+      }
+
+      function status() {
+        const turnName = game.turn() === "w" ? "白方" : "黑方";
+        const yourTurn = game.turn() === CFG.playerColor && !result;
+        document.getElementById("pl-turn").textContent = result
+          ? result
+          : (yourTurn ? "该你走（点棋子，再点落点）" : "对手思考中…");
+        if (!result && !yourTurn) setNote("轮到" + turnName + "…");
+      }
+
+      /* ---------------- 对手：轻量搜索（离线可跑） ---------------- */
+      const LEVELS = {
+        1: { depth: 1, temp: 130, random: 0.25, budget: 200 },
+        2: { depth: 2, temp: 60, random: 0.08, budget: 400 },
+        3: { depth: 3, temp: 22, random: 0.0, budget: 600 },
+        4: { depth: 3, temp: 0, random: 0.0, budget: 800 },
+      };
+      let deadline = 0;
+
+      function evaluate() {
+        if (game.isCheckmate()) return game.turn() === "w" ? -9999 : 9999;
+        if (game.isDraw() || game.isStalemate() || game.isThreefoldRepetition()) return 0;
+        let score = 0;
+        for (const row of game.board()) {
+          for (const sq of row) {
+            if (!sq) continue;
+            score += (sq.color === "w" ? 1 : -1) * VALUE[sq.type] * 10;
+            // 轻微鼓励占中心、鼓励出子
+            const f = FILES.indexOf(sq.square[0]);
+            const r = Number(sq.square[1]) - 1;
+            const centrality = 3 - (Math.abs(3.5 - f) + Math.abs(3.5 - r)) / 2;
+            score += (sq.color === "w" ? 1 : -1) * centrality * 0.4;
+          }
+        }
+        // negamax 要的是"当前行棋方视角"，这里统一换算：正数 = 走子方占优
+        return game.turn() === "w" ? score : -score;
+      }
+
+      function search(depth, alpha, beta) {
+        if (game.isGameOver()) return evaluate();
+        if (depth <= 0) return useQuiesce ? quiesce(alpha, beta) : evaluate();
+        if (performance.now() > deadline) return evaluate();   // 到点了就不再往下挖
+        let best = -Infinity;
+        const moves = game.moves({ verbose: true });
+        for (const move of moves) {
+          game.move(move);
+          const score = -search(depth - 1, -beta, -alpha);
+          game.undo();
+          if (score > best) best = score;
+          if (best > alpha) alpha = best;
+          if (alpha >= beta) break;
+        }
+        return best;
+      }
+
+      // 静止搜索：只继续看吃子，免得"搜到一半正好停在兑子前"而白送子
+      function quiesce(alpha, beta) {
+        const stand = evaluate();
+        if (performance.now() > deadline) return stand;
+        if (stand >= beta) return beta;
+        if (stand > alpha) alpha = stand;
+        for (const move of game.moves({ verbose: true })) {
+          if (!move.captured) continue;
+          game.move(move);
+          const score = -quiesce(-beta, -alpha);
+          game.undo();
+          if (score >= beta) return beta;
+          if (score > alpha) alpha = score;
+        }
+        return alpha;
+      }
+
+      function pickMove(level) {
+        const conf = LEVELS[level] || LEVELS[2];
+        useQuiesce = !!conf.quiesce;
+        deadline = performance.now() + (conf.budget || 500);
+        const moves = game.moves({ verbose: true });
+        if (!moves.length) return null;
+        if (conf.random && Math.random() < conf.random) {
+          return moves[Math.floor(Math.random() * moves.length)];
+        }
+        // 先看吃子（大概率是重点），时间不够时至少把值得看的看完了
+        moves.sort((a, b) => (VALUE[b.captured] || 0) - (VALUE[a.captured] || 0));
+        const scored = [];
+        for (const move of moves) {
+          game.move(move);
+          const score = -search(conf.depth - 1, -Infinity, Infinity);
+          game.undo();
+          scored.push({ move, score });
+          if (performance.now() > deadline) break;
+        }
+        if (!conf.temp) {
+          scored.sort((a, b) => b.score - a.score);
+          return scored[0].move;
+        }
+        const best = Math.max(...scored.map((s) => s.score));
+        const weights = scored.map((s) => Math.exp((s.score - best) / (conf.temp / 10)));
+        const total = weights.reduce((a, b) => a + b, 0);
+        let point = Math.random() * total;
+        for (let i = 0; i < scored.length; i++) {
+          point -= weights[i];
+          if (point <= 0) return scored[i].move;
+        }
+        return scored[0].move;
+      }
+
+      function engineTurn() {
+        if (result || game.turn() === CFG.playerColor) return;
+        thinking = true;
+        status();
+        window.setTimeout(() => {
+          window.setTimeout(async () => {
+            const level = Number(document.getElementById("pl-level").value) || 2;
+            // 先问真引擎；没就绪/没回话就退回自带的轻量搜索，保证永远能下
+            let move = null;
+            const uci = await askRealEngine(game.fen(), level);
+            if (uci) {
+              move = game.moves({ verbose: true }).find(
+                (m) => m.from + m.to + (m.promotion || "") === uci) || null;
+            }
+            if (!move) move = pickMove(level);
+            if (move) {
+              game.move(move);
+              lastMove = { from: move.from, to: move.to };
+            }
+            thinking = false;
+            refresh("轮到你了：点一个棋子，再点它要去的格子。");
+          }, 30);
+        }, 30);
+      }
+
+      /* ---------------- 真引擎：自己编译的单文件 Stockfish（离线、wasm 内嵌） ---------------- */
+      const LEVEL_SKILL = { 1: 0, 2: 4, 3: 9, 4: 14 };
+      /* ---- 棋钟：1+0 / 2+1 / 3+2 / 5+3 / 10+0 / 15+10，加秒、超时判负、最后 10 秒变红 ---- */
+      function parseTime(value) {
+        if (!value || value === "none") return { base: 0, inc: 0 };
+        const p = value.split("+").map(Number);
+        return { base: p[0] * 1000, inc: (p[1] || 0) * 1000 };
+      }
+      function fmtClock(ms) {
+        const t = Math.max(0, Math.ceil(ms / 100) / 10);
+        if (t < 10) return t.toFixed(1);
+        return Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+      }
+      function renderClock() {
+        const elW = document.getElementById("pl-clock-white");
+        const elB = document.getElementById("pl-clock-black");
+        if (!elW || !elB) return;
+        if (!clock.on) { elW.textContent = ""; elB.textContent = ""; return; }
+        const names = CFG.playerColor === "w" ? { w: "你", b: "对手" } : { w: "对手", b: "你" };
+        elW.textContent = "白（" + names.w + "）" + fmtClock(clock.ms.w);
+        elB.textContent = "黑（" + names.b + "）" + fmtClock(clock.ms.b);
+        elW.className = (game.turn() === "w" && !result ? "" : "text-muted ")
+          + (clock.ms.w < 10000 ? "text-destructive" : "");
+        elB.className = (game.turn() === "b" && !result ? "" : "text-muted ")
+          + (clock.ms.b < 10000 ? "text-destructive" : "");
+      }
+      function setupClock(value) {
+        const el = document.getElementById("pl-time");
+        const conf = parseTime(value || (el ? el.value : "none"));
+        clock.base = conf.base;
+        clock.inc = conf.inc;
+        clock.on = conf.base > 0;
+        clock.ms.w = conf.base;
+        clock.ms.b = conf.base;
+        clock.running = clock.on && !result;
+        clock.last = performance.now();
+        renderClock();
+      }
+      function flagFor(side) {
+        if (result) return;
+        result = "时间到：" + (side === "w" ? "黑方胜" : "白方胜");
+        clock.running = false;
+        refresh();
+        setNote(result + "。想让 Codex 复盘就按上面的按钮。");
+      }
+      window.setInterval(() => {
+        if (!clock.on || !clock.running || result) return;
+        const now = performance.now();
+        const dt = Math.max(0, now - clock.last);
+        clock.last = now;
+        const side = game.turn();
+        clock.ms[side] = Math.max(0, clock.ms[side] - dt);
+        renderClock();
+        if (clock.ms[side] <= 0) flagFor(side);
+      }, 100);
+      const LEVEL_DEPTH = { 1: 2, 2: 4, 3: 6, 4: 8 };
+      let realEngine = null;
+      const engineWaiters = [];
+
+      function setEngineStatus(text) {
+        const el = document.getElementById("pl-engine-status");
+        if (el) el.textContent = text;
+      }
+
+      async function initRealEngine() {
+        setEngineStatus("对手：轻量引擎（真引擎启动中…）");
+        if (!ENGINE_B64_GZ) { setEngineStatus("对手：轻量引擎（离线）"); return; }
+        try {
+          const bin = Uint8Array.from(atob(ENGINE_B64_GZ), (c) => c.charCodeAt(0));
+          const bytes = await new Response(
+            new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
+          setEngineStatus("引擎：启动中（" + (bytes.byteLength / 1048576).toFixed(1) + " MB）");
+          // 关键：字节直接进 Blob，绝不做文本往返；worker 协议（onmessage 收、postMessage 发）
+          const url = URL.createObjectURL(new Blob([bytes], { type: "text/javascript" }));
+          const worker = new Worker(url);
+          const state = { worker: worker, ready: false };
+          worker.onmessage = (e) => {
+            const line = String(typeof e.data === "string" ? e.data : (e.data && e.data.data) || e.data);
+            if (line.indexOf("uciok") >= 0 && !state.ready) {
+              state.ready = true;
+              realEngine = state;
+              setEngineStatus("对手：真 Stockfish ✓");
+            }
+            const m = line.match(/^bestmove (\S+)/);
+            if (m) { const waiter = engineWaiters.shift(); if (waiter) waiter(m[1]); }
+          };
+          worker.onerror = () => {
+            setEngineStatus("真引擎启动失败，已退回轻量引擎");
+            realEngine = null;
+          };
+          worker.postMessage("uci");   // 它会先排队，初始化完成后处理
+          window.setTimeout(() => {
+            if (!state.ready) {
+              try { worker.terminate(); } catch (err) { /* 忽略 */ }
+              setEngineStatus("真引擎 20 秒未就绪，已退回轻量引擎");
+              realEngine = null;
+            }
+          }, 20000);
+        } catch (err) {
+          setEngineStatus("真引擎不可用，已退回轻量引擎");
+          realEngine = null;
+        }
+      }
+
+      function askRealEngine(fen, level) {
+        if (engineMode() !== "real") return Promise.resolve(null);
+        return new Promise((resolve) => {
+          if (!realEngine || !realEngine.ready) { resolve(null); return; }
+          const timer = window.setTimeout(() => resolve(null), 8000);
+          engineWaiters.push((uci) => { window.clearTimeout(timer); resolve(uci); });
+          realEngine.worker.postMessage("setoption name Skill Level value " + (LEVEL_SKILL[level] || 4));
+          realEngine.worker.postMessage("position fen " + fen);
+          if (clock.on) {
+            const mine = clock.ms[CFG.playerColor === "w" ? "b" : "w"];
+            realEngine.worker.postMessage("go movetime " + Math.max(120, Math.min(1500, Math.round(mine / 25))));
+          } else {
+            realEngine.worker.postMessage("go depth " + (LEVEL_DEPTH[level] || 4));
+          }
+        });
+      }
+
+      /* ---------------- 走子 ---------------- */
+      function refresh(note) {
+        draw();
+        renderSide();
+        renderMoves();
+        renderClock();
+        status();
+        if (note) setNote(note);
+        if (game.isGameOver() && !result) {
+          result = game.isCheckmate()
+            ? (game.turn() === "w" ? "将杀：黑方胜" : "将杀：白方胜")
+            : "和棋";
+          setNote(result + "。想让 Codex 复盘就按上面的按钮。");
+        }
+      }
+
+      function applyMove(from, to, promotion) {
+        const options = { from, to };
+        if (promotion) options.promotion = promotion;
+        const move = game.move(options);
+        if (!move) return false;
+        lastMove = { from: move.from, to: move.to };
+        if (clock.on) {
+          clock.ms[move.color] += clock.inc;      // 走完才加秒，和线上一样
+          clock.last = performance.now();
+        }
+        selected = null;
+        legalDots = [];
+        refresh();
+        engineTurn();
+        return true;
+      }
+
+      function onSquareClick(square) {
+        if (result || thinking) return;
+        if (game.turn() !== CFG.playerColor) return;
+        clearPromotion();
+        if (selected && selected !== square) {
+          const candidates = legalDots.filter((m) => m.to === square);
+          if (candidates.length) {
+            if (candidates.length > 1 && candidates[0].promotion) {
+              askPromotion(candidates);
+              return;
+            }
+            applyMove(selected, square, candidates[0].promotion);
+            return;
+          }
+        }
+        const piece = game.get(square);
+        if (piece && piece.color === CFG.playerColor) {
+          selected = square;
+          legalDots = game.moves({ square, verbose: true });
+        } else {
+          selected = null;
+          legalDots = [];
+        }
+        draw();
+      }
+
+      function askPromotion(candidates) {
+        clearPromotion();
+        const move = candidates[0];
+        const p = xy(move.to);
+        const wrap = document.createElement("div");
+        wrap.className = "pl-promo";
+        wrap.id = "pl-promo";
+        wrap.style.left = (p[0] / 8) * 100 + "%";
+        wrap.style.top = (p[1] <= 3 ? p[1] : p[1] - 3) / 8 * 100 + "%";
+        wrap.setAttribute("role", "group");
+        wrap.setAttribute("aria-label", "选择升变棋子");
+        for (const type of ["q", "r", "b", "n"]) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "pl-promo-btn";
+          btn.setAttribute("aria-label", "升变为" + GLYPH_VALUE[type]);
+          btn.appendChild(pieceIcon(CFG.playerColor, type, 26));
+          btn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            clearPromotion();
+            applyMove(move.from, move.to, type);
+          });
+          wrap.appendChild(btn);
+        }
+        document.getElementById("pl-boardwrap").appendChild(wrap);
+        setNote("这步是升变，先选一个。");
+      }
+
+      function clearPromotion() {
+        const existing = document.getElementById("pl-promo");
+        if (existing) existing.remove();
+      }
+
+      svg.addEventListener("click", (event) => {
+        const rect = svg.getBoundingClientRect();
+        const scale = 8 / rect.width;
+        const vx = Math.floor((event.clientX - rect.left) * scale);
+        const vy = Math.floor((event.clientY - rect.top) * scale);
+        if (vx < 0 || vx > 7 || vy < 0 || vy > 7) return;
+        onSquareClick(squareAt(vx, vy));
+      });
+
+      /* ---------------- 控制 ---------------- */
+      document.getElementById("pl-undo").addEventListener("click", () => {
+        if (thinking || !game.history().length) return;
+        clearPromotion();
+        game.undo();                                   // 收回对手那步
+        if (game.turn() !== CFG.playerColor && game.history().length) game.undo();
+        result = "";
+        selected = null;
+        legalDots = [];
+        lastMove = null;
+        refresh("已经悔棋，重新想一步。");
+      });
+
+      document.getElementById("pl-level").addEventListener("change", () => {
+        setNote("对手强度已切换，下一步生效。");
+      });
+
+      document.getElementById("pl-time").addEventListener("change", () => {
+        setupClock();
+        setNote(clock.on ? "时限已切换，从现在开始计时。" : "已切到不限时。");
+      });
+
+      function engineMode() {
+        const el = document.getElementById("pl-engine-mode");
+        return el ? el.value : "real";
+      }
+
+      document.getElementById("pl-engine-mode").addEventListener("change", () => {
+        if (engineMode() === "light") {
+          if (realEngine) { try { realEngine.worker.terminate(); } catch (e) { /* 忽略 */ } }
+          realEngine = null;
+          setEngineStatus("对手：轻量引擎（更稳）");
+          setNote("已切到轻量引擎：不加载 Stockfish，界面更稳、反应更快，强度约等于初级。");
+        } else {
+          setNote("正在加载真 Stockfish…就绪前这几步仍由轻量引擎代走。");
+          initRealEngine();
+        }
+      });
+
+      document.getElementById("pl-restart").addEventListener("click", () => {
+        clearPromotion();
+        game.reset();
+        result = "";
+        selected = null;
+        legalDots = [];
+        lastMove = null;
+        setupClock();
+        refresh("重新开始。");
+        if (CFG.playerColor === "b") engineTurn();
+      });
+
+      document.getElementById("pl-review").addEventListener("click", () => {
+        const pgn = game.pgn();
+        const summary = [
+          "PvE 对局（对手强度 " + document.getElementById("pl-level").value + "，我执" +
+            (CFG.playerColor === "w" ? "白" : "黑") + "）",
+          result ? "结果：" + result : "（下到一半，当前局面）",
+          "当前 FEN：" + game.fen(),
+          "",
+          pgn,
+          "",
+          "请用真正的 Stockfish 复盘这盘棋，挑 2-3 个关键转折讲清楚。",
+        ].join("\n");
+        if (window.openai && typeof window.openai.sendFollowUpMessage === "function") {
+          window.openai.sendFollowUpMessage({ prompt: summary, title: "让 Codex 点评这盘棋" });
+          setNote("已经把这盘棋发给 Codex 了，稍等它的复盘。");
+        } else {
+          const box = document.getElementById("pl-fallback");
+          box.hidden = false;
+          box.textContent = "（当前环境不支持一键发送）把下面这段发给 Codex 即可：\n\n" + summary;
+          setNote("没法自动发送，已经把棋谱放在下面了。");
+        }
+      });
+
+      refresh(CFG.playerColor === "w"
+        ? "该你走：点一个棋子，再点它要去的格子。"
+        : "对手先走，稍等。");
+      // 渲染时指定的强度要落到下拉框上，否则读的是默认值
+      if (CFG.level) document.getElementById("pl-level").value = String(CFG.level);
+      if (CFG.playerColor === "b") engineTurn();
+      initRealEngine();
+      setupClock();
+
+      // 给自动化测试留的钩子（不影响正常使用）
+      window.__pve = {
+        play: (from, to, promotion) => applyMove(from, to, promotion),
+        click: (square) => onSquareClick(square),
+        level: () => document.getElementById("pl-level").value,
+        setClock: (ms, inc) => {
+          clock.on = ms > 0;
+          clock.inc = inc || 0;
+          clock.ms.w = clock.ms.b = ms;
+          clock.running = clock.on;
+          clock.last = performance.now();
+          renderClock();
+        },
+        clock: () => ({ on: clock.on, w: Math.round(clock.ms.w), b: Math.round(clock.ms.b), result: result }),
+        state: () => ({ fen: game.fen(), history: game.history(), result: result,
+                        captured: capturedBy("b").length, side: game.turn() }),
+      };
+    })();
+  </script>
+</div>
