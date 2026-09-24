@@ -7,6 +7,22 @@
 > 第一节（交互与功能）与第三节（会话连续性）**尚未开始**。
 > 其中 Windows 的安装脚本只做了逻辑对称，**没在真机验证过**。
 
+### Windows 真机实测反馈（2026-09-24，来自另一台机器）
+
+在 Windows 上跑了一遍，暴露了三个 mac 上测不到的问题，按优先级：
+
+1. **插件在 Codex 里没起来**：仓库里的 `.mcp.json` 用的是 `python3`，Windows 没这个命令 → MCP 工具全部不可用。
+   临时对策：跑 `install.ps1`（它会把配置改成本机路径）。**根治**：让安装脚本把 venv 建到用户数据目录，
+   并让 `.mcp.json` 由安装脚本生成，仓库里那一份只作为 POSIX 默认值。
+2. **插件目录只读**：从 marketplace 装下来的快照不可写，而 `games/`、`notes/`、`cache/`、`engines/`
+   现在都在插件目录里 → 需要引入 `CHESSPLUGIN_HOME`（用户数据目录），把「代码」与「数据」彻底分开。
+   **这是目前离"即插即用"最远的一步。**
+3. **PowerShell 管道喂 UCI 会读错命令**（实测得到 `bestmove a2a3`）：文档里已加警告，
+   工具内部走 python-chess 不受影响。
+
+顺带确认了两件好事：原生 Stockfish 在 Windows 上（`C:\...\Downloads\stockfish\stockfish.exe`）
+用 `CHESSPLUGIN_ENGINE` / `engines\stockfish.exe` 都能被找到；UCI 握手、限强选项（含 `UCI_Elo`）都正常。
+
 ---
 
 ## 一、交互形式与功能（按"对学棋的收益 ÷ 工作量"排序）

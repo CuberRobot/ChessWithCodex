@@ -30,6 +30,10 @@ powershell -ExecutionPolicy Bypass -File install.ps1
 
 装完**重启 Codex**，在 Personal 里启用 `chess` 插件就能用了——不用敲命令，直接跟它说话。
 
+> **Windows 用户务必先跑安装脚本。** 仓库里的 `.mcp.json` 默认写的是 `python3 mcp/launch.py`
+> （mac/Linux 的写法）；Windows 上没有 `python3` 这个命令，插件在 Codex 里会**静默不出现**。
+> `install.ps1` 会把配置改成你本机的解释器路径，跑过它插件才会正常加载。
+
 **还需要一个 Stockfish 引擎**（分析和复盘要用；界面对弈里的那个引擎是可选的，见 `THIRD-PARTY.md`）：
 
 | 系统 | 装法 |
@@ -68,6 +72,15 @@ setx CHESSPLUGIN_ENGINE "C:\Program Files\stockfish\stockfish.exe"
 | 哪来的 | 系统包管理器装（brew / winget / apt） | 用 `tools/build/build_engine.sh` 编一次，产物放 `engines/stockfish-single.js` |
 | 要不要按平台配置 | 要（上面那节） | **不要**，三平台同一个文件 |
 | 缺少时 | 分析类命令会提示安装；对弈自动退回轻量对手 | 同样自动退回轻量对手 |
+
+### Windows 上实测发现的两个坑
+
+1. **别用 PowerShell 管道给引擎喂指令。** `"uci" | stockfish.exe` 这类写法会因编码问题让引擎读错命令
+   （实测出现 `bestmove a2a3` 这种鬼结果）。用我们的 Python 命令（内部走 python-chess 的 stdin/stdout），
+   或在 Python 里显式收发，不要靠 shell 管道。
+2. **插件目录可能是只读的**（从 marketplace 装下来的快照就是这样）。分析结果、棋谱、缓存默认写在插件目录里，
+   只读时会失败。现在的做法是：**把仓库克隆到你自己的可写目录，再跑安装脚本**。
+   （把数据目录挪到用户目录、与插件本体解耦，已经记进 `docs/roadmap.md` 待做。）
 
 ## 文档地图
 
