@@ -97,6 +97,16 @@
     #cr-root figcaption {
       margin: 0;
     }
+    /* 评估曲线：整盘一条线，点哪跳哪 */
+    #cr-root .cr-curve {
+      display: block;
+      width: 100%;
+      height: 72px;
+      touch-action: manipulation;
+    }
+    #cr-root .cr-curve rect[data-hit] {
+      cursor: pointer;
+    }
     @media (prefers-reduced-motion: reduce) {
       #cr-root .cr-eval-fill {
         transition: none !important;
@@ -125,10 +135,13 @@
       <div class="cr-moves" id="cr-moves" role="group" aria-label="着法列表"></div>
     </div>
 
+    <div id="cr-curvewrap"></div>
+
     <div class="viz-controls">
       <button type="button" class="btn" id="cr-prev">上一步</button>
       <button type="button" class="btn" id="cr-play" aria-pressed="false">自动播放</button>
       <button type="button" class="btn" id="cr-next">下一步</button>
+      <button type="button" class="btn" id="cr-jump">跳到下一个转折点</button>
       <label class="form-label" for="cr-speed">间隔</label>
       <select class="form-select" id="cr-speed">
         <option value="600">0.6 秒</option>
@@ -511,6 +524,7 @@
         moveButtons.forEach((btn, i) => {
           if (btn) btn.setAttribute("aria-pressed", i === index ? "true" : "false");
         });
+        markCurve();
       }
 
       /* ---------------- 自动播放 ---------------- */
@@ -542,6 +556,11 @@
       }
 
       playBtn.addEventListener("click", () => (timer ? stop() : start()));
+      document.getElementById("cr-jump").addEventListener("click", () => {
+        stop();
+        setIndex(nextTurningPoint(), false);
+      });
+
       prevBtn.addEventListener("click", () => {
         stop();
         setIndex(index - 1, true);
@@ -557,7 +576,96 @@
         }
       });
 
+      /* ---------------- 评估曲线：整盘一条线，点哪跳哪 ---------------- */
+      const CURVE_W = 800;
+      const CURVE_H = 72;
+      const CURVE_PAD = 6;
+      let curveSvg = null;
+
+      function curveX(i, count) {
+        return CURVE_PAD + (CURVE_W - 2 * CURVE_PAD) * (i / (count - 1 || 1));
+      }
+
+      function curveY(v) {
+        const clamped = Math.max(-5, Math.min(5, v));
+        return CURVE_H / 2 - (clamped / 5) * (CURVE_H / 2 - CURVE_PAD);
+      }
+
+      function buildCurve() {
+        const wrap = document.getElementById("cr-curvewrap");
+        const evals = GAME.evals || [];
+        if (!wrap || !evals.length) return;
+        const NS = "http://www.w3.org/2000/svg";
+        const mk = (tag, attrs) => {
+          const node = document.createElementNS(NS, tag);
+          for (const key in attrs) node.setAttribute(key, attrs[key]);
+          return node;
+        };
+        curveSvg = mk("svg", {
+          viewBox: "0 0 " + CURVE_W + " " + CURVE_H,
+          class: "cr-curve",
+          role: "img",
+          "aria-label": "整盘评估曲线，点击可跳到对应的着法"
+        });
+        curveSvg.appendChild(mk("line", {
+          x1: 0, y1: CURVE_H / 2, x2: CURVE_W, y2: CURVE_H / 2,
+          stroke: "var(--border)", "stroke-width": 1
+        }));
+        const points = evals.map((v, i) => [curveX(i, evals.length), curveY(v)]);
+        const line = points.map((p) => p.join(" ")).join(" L ");
+        curveSvg.appendChild(mk("path", {
+          d: "M " + line + " L " + curveX(evals.length - 1, evals.length) + " " + CURVE_H / 2 +
+             " L " + curveX(0, evals.length) + " " + CURVE_H / 2 + " Z",
+          fill: "var(--viz-series-1)", opacity: 0.12, stroke: "none"
+        }));
+        curveSvg.appendChild(mk("path", {
+          d: "M " + line, fill: "none", stroke: "var(--viz-series-1)",
+          "stroke-width": 1.6, "stroke-linejoin": "round"
+        }));
+        evals.forEach((v, i) => {
+          if (i > 0 && Math.abs(v - evals[i - 1]) >= 1) {     // 转折点
+            curveSvg.appendChild(mk("circle", {
+              cx: curveX(i, evals.length), cy: curveY(v), r: 3.2,
+              fill: "var(--yellow)", stroke: "var(--background)", "stroke-width": 1
+            }));
+          }
+          const cell = mk("rect", {
+            x: curveX(i, evals.length) - CURVE_W / (evals.length * 2), y: 0,
+            width: Math.max(6, CURVE_W / evals.length), height: CURVE_H,
+            fill: "transparent", "data-hit": i + 1
+          });
+          cell.addEventListener("click", () => { stop(); setIndex(i + 1, false); });
+          curveSvg.appendChild(cell);
+        });
+        curveSvg.appendChild(mk("line", {
+          id: "cr-curve-mark", y1: 0, y2: CURVE_H, x1: 0, x2: 0,
+          stroke: "var(--foreground)", "stroke-width": 1.2, opacity: 0.65
+        }));
+        wrap.replaceChildren(curveSvg);
+      }
+
+      function markCurve() {
+        if (!curveSvg) return;
+        const mark = curveSvg.querySelector("#cr-curve-mark");
+        const evals = GAME.evals || [];
+        if (!mark || !evals.length) return;
+        const at = Math.max(0, Math.min(evals.length - 1, index - 1));
+        const cx = curveX(at, evals.length);
+        mark.setAttribute("x1", cx);
+        mark.setAttribute("x2", cx);
+      }
+
+      /** 下一个"评估跳变 ≥1 兵"的着法序号；没有就往后走一步 */
+      function nextTurningPoint() {
+        const evals = GAME.evals || [];
+        for (let i = Math.max(1, index); i < evals.length; i++) {
+          if (Math.abs(evals[i] - evals[i - 1]) >= 1) return i + 1;
+        }
+        return Math.min(PLIES.length, index + 1);
+      }
+
       buildMoveList();
+      buildCurve();
       document.getElementById("cr-title").textContent = GAME.title || "";
       document.getElementById("cr-meta").textContent = GAME.meta || "";
       document.getElementById("cr-engine").textContent = GAME.engineLabel || "";

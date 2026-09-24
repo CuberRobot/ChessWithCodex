@@ -58,6 +58,14 @@ def build_game(record: dict, show_eval: bool = True) -> dict:
     if not start_note and is_pve:
         start_note = "该你走：直接告诉我着法（例如「e4」「Nf3」「马到 f3」），我会让引擎应一手并把这张图更新。"
 
+    # 评估曲线用的数据：每个半回合一个数（白方视角的兵值，杀棋按 ±5 封顶）
+    evals = []
+    for ply in plies:
+        if ply.get("mate") is not None:
+            evals.append(5.0 if ply["mate"] > 0 else -5.0)
+        else:
+            evals.append(round((ply.get("cp") or 0) / 100, 2))
+
     return {
         "title": record.get("title") or record.get("id", "棋谱"),
         "meta": record.get("meta", ""),
@@ -66,6 +74,7 @@ def build_game(record: dict, show_eval: bool = True) -> dict:
         "startCp": record.get("start_cp"),
         "startNote": start_note,
         "showEval": show_eval,
+        "evals": evals if show_eval else [],
         "plies": plies,
     }
 
