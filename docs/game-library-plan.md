@@ -61,6 +61,39 @@ games/
 **发布方式**：GitHub 仓库就够用（raw 地址即"静态站"，插件直接取 `index.json`）；
 要好看再叠一层 GitHub Pages。**不需要后端。**
 
+### 可用来源（2026-09 实测）
+
+**① Lichess 按棋手导出 —— 免 token，实测可用**
+
+```
+GET https://lichess.org/api/games/user/{用户名}?max=20&clocks=true&evals=true&opening=true&analysed=true
+```
+
+- `Accept: application/x-chess-pgn` 拿 PGN；换成 `application/x-ndjson` 拿逐行 JSON（便于只取元数据）。
+- 参数支持 `max / since / until / rated / perfType / color / analysed / moves / tags / clocks / evals / opening`。
+- **必须带 User-Agent**（实测不带会被挡）；读公开对局不需要 token。
+- 一个实测细节：`[%eval]` 只出现在 **Lichess 自己分析过**的对局里（想只要这类就加 `analysed=true`）。
+  没有也无所谓——我们自己用本地引擎重算，有缓存，很便宜。
+
+**② 整库镜像 —— 免 token，实测 200**
+
+```
+https://database.lichess.org/standard/lichess_db_standard_rated_YYYY-MM.pgn.zst
+```
+
+按月分文件、单月几十 GB 级，适合**离线批量建库**，不适合按需拉取（那个用 ①）。
+
+**③ 开局统计 explorer —— 实测返回 401**
+
+`explorer.lichess.ovh` 现在需要授权（带 UA 也是 401），**不要依赖它**；
+要开局统计就自己从本地库里算。
+
+**④ 其他**：单局导出 `/game/export/{id}`、公开研究 `/{studyId}.pgn` 等需要**真实 ID**
+（我用编造的 ID 测出来是 404，那是 ID 不存在，不是接口不可用）。
+
+**礼貌与条款**：带能识别用途的 User-Agent、别狂刷接口（批量走镜像）、公开数据可用于学习研究；
+**现代对局进公共库之前仍要逐条确认来源条款。**
+
 ## 四、插件侧要加什么
 
 新增一个工具 `tools/library.py`（或并进 `chessmem.py` 作为子命令），命令面：
